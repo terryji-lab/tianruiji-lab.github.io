@@ -1,5 +1,32 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>tianrui_ji blog</title><link>https://terryji-lab.github.io/tianruiji-lab.github.io</link><description>祝你们开心！</description><copyright>tianrui_ji blog</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQWYFvJiSFRg4hI9RlwfHvKafp-Xz2I-OZCef8Pu9S8GABFvTXj5t6J61tcWv-2QWspRz9IXFjA5p-MpjMMquoi9ayDr23W0BFt6_XNIzVz0Q&amp;s=10</url><title>avatar</title><link>https://terryji-lab.github.io/tianruiji-lab.github.io</link></image><lastBuildDate>Sun, 12 Apr 2026 08:26:58 +0000</lastBuildDate><managingEditor>tianrui_ji blog</managingEditor><ttl>60</ttl><webMaster>tianrui_ji blog</webMaster><item><title>二分查找</title><link>https://terryji-lab.github.io/tianruiji-lab.github.io/post/er-fen-cha-zhao.html</link><description># 二分查找：用'分界线'思维一劳永逸
+<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>tianrui_ji blog</title><link>https://terryji-lab.github.io/tianruiji-lab.github.io</link><description>祝你们开心！</description><copyright>tianrui_ji blog</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQWYFvJiSFRg4hI9RlwfHvKafp-Xz2I-OZCef8Pu9S8GABFvTXj5t6J61tcWv-2QWspRz9IXFjA5p-MpjMMquoi9ayDr23W0BFt6_XNIzVz0Q&amp;s=10</url><title>avatar</title><link>https://terryji-lab.github.io/tianruiji-lab.github.io</link></image><lastBuildDate>Sun, 12 Apr 2026 08:34:13 +0000</lastBuildDate><managingEditor>tianrui_ji blog</managingEditor><ttl>60</ttl><webMaster>tianrui_ji blog</webMaster><item><title>月亮和香蕉</title><link>https://terryji-lab.github.io/tianruiji-lab.github.io/post/yue-liang-he-xiang-jiao.html</link><description># 香蕉和月亮
+
+今天我吃了一根香蕉  
+它的皮是黄色的  
+像月亮掉在地上  
+但月亮不会掉在地上  
+因为月亮在天上  
+香蕉在我手里  
+
+我咬了一口香蕉  
+味道像棉花糖  
+但棉花糖是白色的  
+香蕉是黄色的  
+哦对了，月亮也是白色的  
+但月亮不能吃  
+
+我把香蕉皮扔在地上  
+被妈妈骂了  
+妈妈说要讲卫生  
+可月亮掉在地上的时候  
+谁来捡它呢？  
+
+晚上我抬头看月亮  
+它还在天上  
+没有变成香蕉  
+也没有被人捡走  
+真好，这样我明天还能吃香蕉  
+看月亮。</description><guid isPermaLink="true">https://terryji-lab.github.io/tianruiji-lab.github.io/post/yue-liang-he-xiang-jiao.html</guid><pubDate>Sun, 12 Apr 2026 08:33:42 +0000</pubDate></item><item><title>二分查找</title><link>https://terryji-lab.github.io/tianruiji-lab.github.io/post/er-fen-cha-zhao.html</link><description># 二分查找：用'分界线'思维一劳永逸
 
 **单调性是二分的前提**
 
