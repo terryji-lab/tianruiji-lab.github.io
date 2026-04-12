@@ -1,5 +1,15 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>tianrui_ji blog</title><link>https://terryji-lab.github.io/tianruiji-lab.github.io</link><description>祝你们开心！</description><copyright>tianrui_ji blog</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://avatars.githubusercontent.com/u/234720569?u=3be9bef1109cc9421ddb007b48de981393a8ccdc&amp;v=4&amp;size=512</url><title>avatar</title><link>https://terryji-lab.github.io/tianruiji-lab.github.io</link></image><lastBuildDate>Sun, 12 Apr 2026 09:39:49 +0000</lastBuildDate><managingEditor>tianrui_ji blog</managingEditor><ttl>60</ttl><webMaster>tianrui_ji blog</webMaster><item><title>月亮和香蕉</title><link>https://terryji-lab.github.io/tianruiji-lab.github.io/post/yue-liang-he-xiang-jiao.html</link><description># 香蕉和月亮
+<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0"><channel><title>tianrui_ji blog</title><link>https://terryji-lab.github.io/tianruiji-lab.github.io</link><description>祝你们开心！</description><copyright>tianrui_ji blog</copyright><docs>http://www.rssboard.org/rss-specification</docs><generator>python-feedgen</generator><image><url>https://avatars.githubusercontent.com/u/234720569?u=3be9bef1109cc9421ddb007b48de981393a8ccdc&amp;v=4&amp;size=512</url><title>avatar</title><link>https://terryji-lab.github.io/tianruiji-lab.github.io</link></image><lastBuildDate>Sun, 12 Apr 2026 10:18:29 +0000</lastBuildDate><managingEditor>tianrui_ji blog</managingEditor><ttl>60</ttl><webMaster>tianrui_ji blog</webMaster><item><title>洛谷 P1102 A-B 数对</title><link>https://terryji-lab.github.io/tianruiji-lab.github.io/post/luo-gu-%20P1102%20A-B%20-shu-dui.html</link><description># P1102 A-B 数对
+
+## 题目背景
+
+出题是一件痛苦的事情！
+
+相同的题目看多了也会有审美疲劳，于是我舍弃了大家所熟悉的 A+B Problem，改用 A-B 了哈哈！
+
+## 题目描述
+
+给出一串正整数数列以及一个正整数 $C$，要求计算出所有满足 $A - B = C$ 的数对的个数（不同位置的数字一样的数对算不同的数对）。</description><guid isPermaLink="true">https://terryji-lab.github.io/tianruiji-lab.github.io/post/luo-gu-%20P1102%20A-B%20-shu-dui.html</guid><pubDate>Sun, 12 Apr 2026 10:17:55 +0000</pubDate></item><item><title>月亮和香蕉</title><link>https://terryji-lab.github.io/tianruiji-lab.github.io/post/yue-liang-he-xiang-jiao.html</link><description># 香蕉和月亮
 
 今天我吃了一根香蕉  
 它的皮是黄色的  
