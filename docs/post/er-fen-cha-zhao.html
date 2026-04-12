@@ -10,17 +10,25 @@
         let theme = localStorage.getItem("meek_theme") || "light";
         document.documentElement.setAttribute("data-color-mode", theme);
     </script>
-<meta name="description" content="# 二分查找
+<meta name="description" content="# 二分查找：用'分界线'思维一劳永逸
 
 **单调性是二分的前提**
 
-二分查找的核心思想是**不断缩小搜索范围**，通过比较中间值来排除不可能的区域。">
+## 核心本质：二分查找不是'找数'，是'划界'
+
+所有二分查找问题，本质都是：
+
+把一个 **单调有序** 的序列，分成 **左边满足条件** 和 **右边不满足条件** 的两个部分，找到它们之间的 **分界线**。">
 <meta property="og:title" content="二分查找">
-<meta property="og:description" content="# 二分查找
+<meta property="og:description" content="# 二分查找：用'分界线'思维一劳永逸
 
 **单调性是二分的前提**
 
-二分查找的核心思想是**不断缩小搜索范围**，通过比较中间值来排除不可能的区域。">
+## 核心本质：二分查找不是'找数'，是'划界'
+
+所有二分查找问题，本质都是：
+
+把一个 **单调有序** 的序列，分成 **左边满足条件** 和 **右边不满足条件** 的两个部分，找到它们之间的 **分界线**。">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://terryji-lab.github.io/tianruiji-lab.github.io/post/er-fen-cha-zhao.html">
 <meta property="og:image" content="https://avatars.githubusercontent.com/u/234720569?v=4&size=64">
@@ -91,201 +99,123 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 </div>
 </div>
     <div id="content">
-<div class="markdown-body" id="postBody"><h1>二分查找</h1>
+<div class="markdown-body" id="postBody"><h1>二分查找：用"分界线"思维一劳永逸</h1>
 <p><strong>单调性是二分的前提</strong></p>
-<p>二分查找的核心思想是<strong>不断缩小搜索范围</strong>，通过比较中间值来排除不可能的区域。整型二分有三种常用模板：左闭右闭、左闭右开、左开右开。其中左闭右闭最推荐，因为它最好理解也最好写。</p>
-<p>浮点型二分则是夹逼型的二分，需要特别注意精度问题。</p>
-<hr>
-<h2>整型二分模板一：左闭右闭（最推荐）</h2>
-<p>这是<strong>最推荐</strong>的模板，最好理解也最好写。</p>
-<div class="highlight highlight-source-c++"><pre class="notranslate"><span class="pl-c"><span class="pl-c">//</span> 查找最后一个小于等于q的数</span>
-<span class="pl-k">int</span> <span class="pl-en">find</span>(<span class="pl-k">int</span> q)
-{
-    <span class="pl-k">int</span> l=<span class="pl-c1">1</span>, r=n;    <span class="pl-c"><span class="pl-c">//</span> 闭区间 [1,n]</span>
-    <span class="pl-k">while</span>(l&lt;=r)      <span class="pl-c"><span class="pl-c">//</span> 注意是&lt;=，当 l=r 时还有一个元素没检查</span>
-    {
-        <span class="pl-k">int</span> mid=l+(r-l)/<span class="pl-c1">2</span>;    <span class="pl-c"><span class="pl-c">//</span> 防止溢出的写法</span>
-        <span class="pl-k">if</span>(a[mid]&lt;=q) l=mid+<span class="pl-c1">1</span>;    <span class="pl-c"><span class="pl-c">//</span> 查找符合条件的最大值</span>
-        <span class="pl-k">else</span> r=mid-<span class="pl-c1">1</span>;
-    }
-    <span class="pl-k">return</span> r;    <span class="pl-c"><span class="pl-c">//</span> 返回 r，此时 r 指向最后一个满足条件的数</span>
-}</pre></div>
-<p><strong>核心要点</strong>：</p>
-<p><strong>区间选择</strong>：[l,r] 是闭区间，所以初始 l=1, r=n，包含边界。</p>
-<p><strong>循环条件</strong>：while(l&lt;=r)，注意这里有等号。因为当 l=r 时，区间里还有一个元素没检查，所以要继续循环。当 l&gt;r 时，区间为空，循环结束。</p>
-<p><strong>mid 计算</strong>：推荐写成 l+(r-l)/2，这样可以防止 (l+r) 溢出。当然如果题目数据范围不大，写成 (l+r)/2 也可以。</p>
-<p><strong>核心逻辑</strong>：如果 a[mid]&lt;=q，说明 mid 可能是答案，但我们要找更大的，所以 l=mid+1，去右半部分继续找。如果 a[mid]&gt;q，说明 mid 不满足条件，要去左边找，所以 r=mid-1。</p>
-<p><strong>返回值</strong>：返回 r。为什么返回 r 呢？因为循环结束时，r 指向最后一个满足条件的数，l 指向第一个不满足条件的数。</p>
-<h3>举个实际例子</h3>
-<p>数组 a=[1,3,5,7,9]，找最后一个小于等于 6 的数的位置。</p>
-<p>初始 l=1, r=5</p>
-<ul>
-<li>第一次循环：mid=3, a[3]=5&lt;=6，所以 l=mid+1=4</li>
-<li>第二次循环：mid=4, a[4]=7&gt;6，所以 r=mid-1=3</li>
-<li>现在 l=4, r=3，l&gt;r，循环结束</li>
-<li>返回 r=3，对应 a[3]=5，正确</li>
-</ul>
-<hr>
-<h2>整型二分模板二：左闭右开</h2>
-<p>这个模板用得比较少，但在某些边界问题上有优势。</p>
+<h2>核心本质：二分查找不是"找数"，是"划界"</h2>
+<p>所有二分查找问题，本质都是：</p>
+<p>把一个 <strong>单调有序</strong> 的序列，分成 <strong>左边满足条件</strong> 和 <strong>右边不满足条件</strong> 的两个部分，找到它们之间的 <strong>分界线</strong>。</p>
+<p>以经典例子：数组 a=[1,3,5,7,9]</p>
+<p>条件： &lt;=6 → 左边满足： [1,3,5] ，右边不满足： [7,9]</p>
+<p>分界线就在 5 和 7 之间</p>
+<h2>指针站位：循环结束时的状态</h2>
+<h2>所有二分查找模板的最终结果：<strong>循环结束时，两个指针 l 和 r 会正好分别站在分界线的左右两边</strong><br>
+-左边和右边的两个指针分别指向两个区间，哪一个区间是有效区间根据二分的写法而定<br>
+-一般找最大左区间为有效区间，找最小右区间为有效区间<br>
+你只需要判断：题目要的是分界线左边的还是右边的，然后返回<strong>对应的指针</strong>即可。<br>
+这里我推荐使用左开右开的二分模板，因为这个模板最后的结果l和r指针刚好相邻（l+1=r）</h2>
+<h2>整型二分模板：左开右开</h2>
 <div class="highlight highlight-source-c++"><pre class="notranslate"><span class="pl-k">int</span> <span class="pl-en">find</span>(<span class="pl-k">int</span> q)
 {
-    <span class="pl-k">int</span> l=<span class="pl-c1">1</span>, r=n+<span class="pl-c1">1</span>;    <span class="pl-c"><span class="pl-c">//</span> 左闭右开 [1,n+1)</span>
-    <span class="pl-k">while</span>(l&lt;r)         <span class="pl-c"><span class="pl-c">//</span> 注意没有等号</span>
-    {
-        <span class="pl-k">int</span> mid=l+(r-l)/<span class="pl-c1">2</span>;
-        <span class="pl-k">if</span>(a[mid]&lt;=q) l=mid+<span class="pl-c1">1</span>;
-        <span class="pl-k">else</span> r=mid;
-    }
-    <span class="pl-k">return</span> l-<span class="pl-c1">1</span>;    <span class="pl-c"><span class="pl-c">//</span> 返回 l-1</span>
-}</pre></div>
-<p><strong>核心要点</strong>：</p>
-<p><strong>区间选择</strong>：[l,r) 是左闭右开，所以初始 l=1, r=n+1。右边界是开区间，所以要取 n+1。</p>
-<p><strong>循环条件</strong>：while(l&lt;r)，没有等号。因为当 l=r 时，区间为空（左闭右开的区间长度为 r-l），所以不需要继续循环。</p>
-<p><strong>核心逻辑</strong>：和左闭右闭类似，a[mid]&lt;=q 时 l=mid+1，a[mid]&gt;q 时 r=mid。注意这里 r=mid 而不是 r=mid-1，因为右边界是开区间。</p>
-<p><strong>返回值</strong>：返回 l-1。因为循环结束时，l 指向第一个不满足条件的数，所以 l-1 就是最后一个满足条件的数。</p>
-<h3>举个实际例子</h3>
-<p>数组 a=[1,3,5,7,9]，找最后一个小于等于 6 的数的位置。</p>
-<p>初始 l=1, r=6</p>
-<ul>
-<li>第一次循环：mid=3, a[3]=5&lt;=6，所以 l=mid+1=4</li>
-<li>第二次循环：mid=5, a[5]=9&gt;6，所以 r=mid=5</li>
-<li>第三次循环：mid=4, a[4]=7&gt;6，所以 r=mid=4</li>
-<li>现在 l=4, r=4，l=r，循环结束</li>
-<li>返回 l-1=3，对应 a[3]=5，正确</li>
-</ul>
-<hr>
-<h2>整型二分模板三：左开右开</h2>
-<div class="highlight highlight-source-c++"><pre class="notranslate"><span class="pl-k">int</span> <span class="pl-en">find</span>(<span class="pl-k">int</span> q)
-{
-    <span class="pl-k">int</span> l=<span class="pl-c1">0</span>, r=n+<span class="pl-c1">1</span>;    <span class="pl-c"><span class="pl-c">//</span> 查找范围为 [1,n]，要开成 (0,n+1) 的开区间</span>
+    <span class="pl-k">int</span> l=<span class="pl-c1">0</span>, r=n+<span class="pl-c1">1</span>;    <span class="pl-c"><span class="pl-c">//</span> 查找范围为 [1,n]，开成 (0,n+1) 的开区间</span>
     <span class="pl-k">while</span>(l+<span class="pl-c1">1</span>&lt;r)       <span class="pl-c"><span class="pl-c">//</span> l+1=r 即 l 与 r 相邻时查找结束</span>
     {
         <span class="pl-k">int</span> mid=(l+r)/<span class="pl-c1">2</span>;
         <span class="pl-k">if</span>(a[mid]&lt;=q) l=mid;    <span class="pl-c"><span class="pl-c">//</span> 查找符合条件的最大值（满足条件时左指针右移寻找更大值）</span>
         <span class="pl-k">else</span> r=mid;
     }
-    <span class="pl-k">return</span> l;    <span class="pl-c"><span class="pl-c">//</span> 返回可行区间内的指针</span>
+    <span class="pl-k">return</span> l;    <span class="pl-c"><span class="pl-c">//</span> 返回可行区间内的指针，可行区间在左指向最大值，可行区间在右指向最小值</span>
 }</pre></div>
-<p><strong>核心要点</strong>：</p>
-<p><strong>区间选择</strong>：这里用的是左开右开 (0, n+1)，因为题目给的查找范围通常是 [1,n]，开成 (0,n+1) 可以保证边界情况也能正确处理。</p>
-<p><strong>循环条件</strong>：while(l+1&lt;r)，这个条件的意思是当 l 和 r 相邻的时候就停止循环。这样可以避免死循环。</p>
-<p><strong>核心逻辑</strong>：判断 a[mid]&lt;=q，如果满足条件就让 l=mid，意思是我们要找符合条件的最大值，满足条件的时候左指针右移去寻找更大的值。如果不满足就让 r=mid。</p>
-<p><strong>返回值</strong>：返回 l，返回的是可行区间内的指针。如果可行区间在左边，l 指向最大值；如果可行区间在右边，l 指向最小值。</p>
-<h3>举个实际例子</h3>
+<h3>核心要点：</h3>
+<p><strong>1. 区间选择</strong>：(l,r) 是左开右开区间，初始 l=0, r=n+1。这样可以保证边界情况也能正确处理，比如答案是 1 或者 n 这种边界值，开区间可以避免越界访问。</p>
+<p><strong>2. 循环条件</strong>：while(l+1&lt;r)，当 l 和 r 相邻的时候就停止循环。这样可以避免死循环，比如当 l=mid 时，如果 mid 一直等于 l，就会永远跳不出去。</p>
+<p><strong>3. 核心逻辑</strong>：判断 a[mid]&lt;=q，如果满足条件就让 l=mid（左指针右移寻找更大值），不满足就让 r=mid（右指针左移）。</p>
+<p><strong>4. 返回值</strong>：返回 l。循环结束时，l 指向最后一个满足条件的数，r 指向第一个不满足条件的数。</p>
+<h3>实际例子：</h3>
 <p>数组 a=[1,3,5,7,9]，找最后一个小于等于 6 的数的位置。</p>
-<p>初始 l=0, r=6（n=5）</p>
 <ul>
+<li>初始 l=0, r=6（n=5）</li>
 <li>第一次循环：mid=3, a[3]=7&gt;6，所以 r=mid=3</li>
 <li>第二次循环：mid=1, a[1]=3&lt;=6，所以 l=mid=1</li>
 <li>第三次循环：mid=2, a[2]=5&lt;=6，所以 l=mid=2</li>
 <li>现在 l=2, r=3，l+1=r，循环结束</li>
 <li>返回 l=2，对应 a[2]=5，确实是最后一个小于等于 6 的数</li>
 </ul>
+<p><strong>指针站位分析</strong>：循环结束时，l=2（指向最后一个满足条件的数 5），r=3（指向第一个不满足条件的数 7），正好站在分界线的两侧。</p>
 <hr>
-<h2>三种模板的对比</h2>
+<h2>找最大值与找最小值</h2>
+<h3>1. 找最大值（最后一个满足条件的数）</h3>
+<p><strong>问题</strong>：在有序数组中，找到最后一个小于等于 q 的数。</p>
+<p><strong>条件</strong>：a[mid] &lt;= q → 左边满足，右边不满足</p>
+<p><strong>模板</strong>：</p>
+<div class="highlight highlight-source-c++"><pre class="notranslate"><span class="pl-k">int</span> <span class="pl-en">findLast</span>(<span class="pl-k">int</span> q)
+{
+    <span class="pl-k">int</span> l=<span class="pl-c1">0</span>, r=n+<span class="pl-c1">1</span>;
+    <span class="pl-k">while</span>(l+<span class="pl-c1">1</span>&lt;r)
+    {
+        <span class="pl-k">int</span> mid=(l+r)/<span class="pl-c1">2</span>;
+        <span class="pl-k">if</span>(a[mid]&lt;=q) l=mid;    <span class="pl-c"><span class="pl-c">//</span> 满足条件，左指针右移寻找更大值</span>
+        <span class="pl-k">else</span> r=mid;
+    }
+    <span class="pl-k">return</span> l;
+}</pre></div>
+<p><strong>例子</strong>：a=[1,3,5,7,9]，找最后一个 &lt;=6 的数</p>
+<ul>
+<li>结果：返回 2（对应 a[2]=5）</li>
+</ul>
+<h3>2. 找最小值（第一个满足条件的数）</h3>
+<p><strong>问题</strong>：在有序数组中，找到第一个大于等于 q 的数。</p>
+<p><strong>条件</strong>：a[mid] &gt;= q → 左边不满足，右边满足</p>
+<p><strong>模板</strong>：</p>
+<div class="highlight highlight-source-c++"><pre class="notranslate"><span class="pl-k">int</span> <span class="pl-en">findFirst</span>(<span class="pl-k">int</span> q)
+{
+    <span class="pl-k">int</span> l=<span class="pl-c1">0</span>, r=n+<span class="pl-c1">1</span>;
+    <span class="pl-k">while</span>(l+<span class="pl-c1">1</span>&lt;r)
+    {
+        <span class="pl-k">int</span> mid=(l+r)/<span class="pl-c1">2</span>;
+        <span class="pl-k">if</span>(a[mid]&gt;=q) r=mid;    <span class="pl-c"><span class="pl-c">//</span> 满足条件，右指针左移寻找更小值</span>
+        <span class="pl-k">else</span> l=mid;
+    }
+    <span class="pl-k">return</span> r;
+}</pre></div>
+<p><strong>例子</strong>：a=[1,3,5,7,9]，找第一个 &gt;=6 的数</p>
+<ul>
+<li>初始 l=0, r=6</li>
+<li>第一次循环：mid=3, a[3]=7&gt;=6，所以 r=mid=3</li>
+<li>第二次循环：mid=1, a[1]=3&lt;6，所以 l=mid=1</li>
+<li>第三次循环：mid=2, a[2]=5&lt;6，所以 l=mid=2</li>
+<li>现在 l=2, r=3，l+1=r，循环结束</li>
+<li>返回 r=3（对应 a[3]=7）</li>
+</ul>
+<p><strong>指针站位分析</strong>：循环结束时，l=2（指向最后一个不满足条件的数 5），r=3（指向第一个满足条件的数 7），正好站在分界线的两侧。</p>
+<h3>核心区别</h3>
 <markdown-accessiblity-table><table role="table">
 <thead>
 <tr>
-<th align="center">模板</th>
-<th align="center">区间类型</th>
-<th align="center">循环条件</th>
-<th align="center">mid 更新</th>
+<th align="center">查找类型</th>
+<th align="center">条件判断</th>
+<th align="center">指针移动</th>
 <th align="center">返回值</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td align="center">左闭右闭</td>
-<td align="center">[l,r]</td>
-<td align="center">l&lt;=r</td>
-<td align="center">l=mid+1, r=mid-1</td>
-<td align="center">r</td>
-</tr>
-<tr>
-<td align="center">左闭右开</td>
-<td align="center">[l,r)</td>
-<td align="center">l&lt;r</td>
-<td align="center">l=mid+1, r=mid</td>
-<td align="center">l-1</td>
-</tr>
-<tr>
-<td align="center">左开右开</td>
-<td align="center">(l,r)</td>
-<td align="center">l+1&lt;r</td>
-<td align="center">l=mid, r=mid</td>
+<td align="center">找最大值</td>
+<td align="center">a[mid] &lt;= q</td>
+<td align="center">满足时 l=mid</td>
 <td align="center">l</td>
+</tr>
+<tr>
+<td align="center">找最小值</td>
+<td align="center">a[mid] &gt;= q</td>
+<td align="center">满足时 r=mid</td>
+<td align="center">r</td>
 </tr>
 </tbody>
 </table></markdown-accessiblity-table>
-<p><strong>选择建议</strong>：</p>
-<ul>
-<li><strong>新手推荐</strong>：左闭右闭，最好理解，不容易出错</li>
-<li><strong>边界复杂</strong>：左开右开，不需要考虑边界问题</li>
-<li><strong>特殊场景</strong>：左闭右开，某些题目用起来更方便</li>
-</ul>
-<hr>
-<h2>二分查找的核心：查询最大值 vs 最小值</h2>
-<p>这是二分查找最容易混淆的地方。关键在于<strong>判断条件和移动方向</strong>：</p>
-<h3>查询最大值（最后一个满足条件的数）</h3>
-<div class="highlight highlight-source-c++"><pre class="notranslate"><span class="pl-c"><span class="pl-c">//</span> 查找最后一个小于等于q的数</span>
-<span class="pl-k">if</span>(a[mid] &lt;= q) l = mid+<span class="pl-c1">1</span>;  <span class="pl-c"><span class="pl-c">//</span> 满足条件，向右找更大的</span>
-<span class="pl-k">else</span> r = mid-<span class="pl-c1">1</span>;             <span class="pl-c"><span class="pl-c">//</span> 不满足条件，向左找</span>
-<span class="pl-k">return</span> r;</pre></div>
-<h3>查询最小值（第一个满足条件的数）</h3>
-<div class="highlight highlight-source-c++"><pre class="notranslate"><span class="pl-c"><span class="pl-c">//</span> 查找第一个大于等于q的数  </span>
-<span class="pl-k">if</span>(a[mid] &gt;= q) r = mid-<span class="pl-c1">1</span>;  <span class="pl-c"><span class="pl-c">//</span> 满足条件，向左找更小的</span>
-<span class="pl-k">else</span> l = mid+<span class="pl-c1">1</span>;             <span class="pl-c"><span class="pl-c">//</span> 不满足条件，向右找</span>
-<span class="pl-k">return</span> l;</pre></div>
-<p><strong>记忆技巧</strong>：</p>
-<ul>
-<li>找<strong>最大值</strong>：条件用 <code class="notranslate">&lt;=</code>，满足时<strong>向右</strong>移动</li>
-<li>找<strong>最小值</strong>：条件用 <code class="notranslate">&gt;=</code>，满足时<strong>向左</strong>移动</li>
-</ul>
-<h3>四种常见查询场景的完整模板</h3>
-<h4>场景1：查找第一个大于等于q的数（最小值）</h4>
-<div class="highlight highlight-source-c++"><pre class="notranslate"><span class="pl-k">int</span> <span class="pl-en">find_first_ge</span>(<span class="pl-k">int</span> q) {
-    <span class="pl-k">int</span> l=<span class="pl-c1">1</span>, r=n;
-    <span class="pl-k">while</span>(l&lt;=r) {
-        <span class="pl-k">int</span> mid=l+(r-l)/<span class="pl-c1">2</span>;
-        <span class="pl-k">if</span>(a[mid] &gt;= q) r=mid-<span class="pl-c1">1</span>;  <span class="pl-c"><span class="pl-c">//</span> 满足条件，向左找更小的</span>
-        <span class="pl-k">else</span> l=mid+<span class="pl-c1">1</span>;             <span class="pl-c"><span class="pl-c">//</span> 不满足条件，向右找</span>
-    }
-    <span class="pl-k">return</span> l;  <span class="pl-c"><span class="pl-c">//</span> l指向第一个满足条件的数</span>
-}</pre></div>
-<h4>场景2：查找最后一个小于等于q的数（最大值）</h4>
-<div class="highlight highlight-source-c++"><pre class="notranslate"><span class="pl-k">int</span> <span class="pl-en">find_last_le</span>(<span class="pl-k">int</span> q) {
-    <span class="pl-k">int</span> l=<span class="pl-c1">1</span>, r=n;
-    <span class="pl-k">while</span>(l&lt;=r) {
-        <span class="pl-k">int</span> mid=l+(r-l)/<span class="pl-c1">2</span>;
-        <span class="pl-k">if</span>(a[mid] &lt;= q) l=mid+<span class="pl-c1">1</span>;  <span class="pl-c"><span class="pl-c">//</span> 满足条件，向右找更大的</span>
-        <span class="pl-k">else</span> r=mid-<span class="pl-c1">1</span>;             <span class="pl-c"><span class="pl-c">//</span> 不满足条件，向左找</span>
-    }
-    <span class="pl-k">return</span> r;  <span class="pl-c"><span class="pl-c">//</span> r指向最后一个满足条件的数</span>
-}</pre></div>
-<h4>场景3：查找第一个大于q的数</h4>
-<div class="highlight highlight-source-c++"><pre class="notranslate"><span class="pl-k">int</span> <span class="pl-en">find_first_gt</span>(<span class="pl-k">int</span> q) {
-    <span class="pl-k">int</span> l=<span class="pl-c1">1</span>, r=n;
-    <span class="pl-k">while</span>(l&lt;=r) {
-        <span class="pl-k">int</span> mid=l+(r-l)/<span class="pl-c1">2</span>;
-        <span class="pl-k">if</span>(a[mid] &gt; q) r=mid-<span class="pl-c1">1</span>;   <span class="pl-c"><span class="pl-c">//</span> 满足条件，向左找更小的</span>
-        <span class="pl-k">else</span> l=mid+<span class="pl-c1">1</span>;             <span class="pl-c"><span class="pl-c">//</span> 不满足条件，向右找</span>
-    }
-    <span class="pl-k">return</span> l;  <span class="pl-c"><span class="pl-c">//</span> l指向第一个满足条件的数</span>
-}</pre></div>
-<h4>场景4：查找最后一个小于q的数</h4>
-<div class="highlight highlight-source-c++"><pre class="notranslate"><span class="pl-k">int</span> <span class="pl-en">find_last_lt</span>(<span class="pl-k">int</span> q) {
-    <span class="pl-k">int</span> l=<span class="pl-c1">1</span>, r=n;
-    <span class="pl-k">while</span>(l&lt;=r) {
-        <span class="pl-k">int</span> mid=l+(r-l)/<span class="pl-c1">2</span>;
-        <span class="pl-k">if</span>(a[mid] &lt; q) l=mid+<span class="pl-c1">1</span>;   <span class="pl-c"><span class="pl-c">//</span> 满足条件，向右找更大的</span>
-        <span class="pl-k">else</span> r=mid-<span class="pl-c1">1</span>;             <span class="pl-c"><span class="pl-c">//</span> 不满足条件，向左找</span>
-    }
-    <span class="pl-k">return</span> r;  <span class="pl-c"><span class="pl-c">//</span> r指向最后一个满足条件的数</span>
-}</pre></div>
+<p><strong>关键</strong>：根据题目要求的是分界线左边还是右边的数，选择对应的条件判断和返回值。</p>
 <hr>
 <h2>浮点型二分</h2>
-<p>浮点型二分是夹逼型的二分，和整型二分不太一样。</p>
+<p>浮点型二分是夹逼型的二分，和整型二分类似，也是寻找分界线。</p>
 <p>题目：求一个浮点数的立方根（-10000≤y≤10000）</p>
 <div class="highlight highlight-source-c++"><pre class="notranslate"><span class="pl-k">double</span> <span class="pl-en">find</span>(<span class="pl-k">double</span> y)
 {
@@ -298,12 +228,11 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
     }
     <span class="pl-k">return</span> l;    <span class="pl-c"><span class="pl-c">//</span> 此处 r 与 l 几乎重合，输出二者皆可</span>
 }</pre></div>
-<p><strong>区间选择</strong>：l=-100, r=100，因为 y 的范围是 -10000 到 10000，立方根的范围大概在 -100 到 100 之间。</p>
-<p><strong>循环条件</strong>：while(r-l&gt;1e-9)，浮点数不能直接判等，因为浮点数有精度误差，所以我们用 r-l&gt;1e-9 来控制精度。</p>
-<p><strong>核心逻辑</strong>：判断 mid 的立方是否小于等于 y，满足条件就 l=mid，不满足就 r=mid。</p>
-<p><strong>返回值</strong>：返回 l，这个时候 r 和 l 已经几乎重合了。</p>
-<h3>为什么浮点型二分更简单？</h3>
-<p>浮点型二分不需要考虑边界问题，因为它是夹逼型的，只要 r-l 足够小就可以停止了。而整型二分需要考虑 l 和 r 的初始值、循环条件、返回值等等，稍微复杂一些。</p>
+<h3>核心要点：</h3>
+<p><strong>1. 区间选择</strong>：l=-100, r=100，因为 y 的范围是 -10000 到 10000，立方根的范围大概在 -100 到 100 之间。</p>
+<p><strong>2. 循环条件</strong>：while(r-l&gt;1e-9)，浮点数不能直接判等，用精度控制循环结束。</p>
+<p><strong>3. 核心逻辑</strong>：和整型二分类似，判断 mid 的立方是否小于等于 y，满足条件就 l=mid，不满足就 r=mid。</p>
+<p><strong>4. 返回值</strong>：返回 l，此时 r 和 l 已经几乎重合。</p>
 <hr>
 <h2>浮点数判断法则</h2>
 <p>浮点数不能直接用==来判断，需要用以下法则：</p>
@@ -342,58 +271,6 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 </tbody>
 </table></markdown-accessiblity-table>
 <p>其中 eps 一般取 1e-8 或者 1e-9。</p>
-<h3>实际例子</h3>
-<div class="highlight highlight-source-c++"><pre class="notranslate"><span class="pl-k">double</span> a = <span class="pl-c1">0.1</span> + <span class="pl-c1">0.2</span>;
-<span class="pl-k">double</span> b = <span class="pl-c1">0.3</span>;
-<span class="pl-k">if</span>(abs(a-b) &lt; <span class="pl-c1">1e-9</span>) {
-    cout &lt;&lt; <span class="pl-s"><span class="pl-pds">"</span>相等<span class="pl-pds">"</span></span> &lt;&lt; endl;
-} <span class="pl-k">else</span> {
-    cout &lt;&lt; <span class="pl-s"><span class="pl-pds">"</span>不相等<span class="pl-pds">"</span></span> &lt;&lt; endl;
-}</pre></div>
-<p>如果直接用 a==b 判断，可能会得到不相等的结果，因为 0.1+0.2 在计算机里可能等于 0.30000000000000004，和 0.3 有一点点差距。</p>
-<hr>
-<h2>整型二分 vs 浮点型二分</h2>
-<markdown-accessiblity-table><table role="table">
-<thead>
-<tr>
-<th align="center">特性</th>
-<th align="center">整型二分</th>
-<th align="center">浮点型二分</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td align="center">区间类型</td>
-<td align="center">左开右开/左闭右闭/左闭右开</td>
-<td align="center">开区间</td>
-</tr>
-<tr>
-<td align="center">循环条件</td>
-<td align="center">l+1&lt;r 或 l&lt;=r 或 l&lt;r</td>
-<td align="center">r-l&gt;eps</td>
-</tr>
-<tr>
-<td align="center">边界处理</td>
-<td align="center">需要仔细考虑</td>
-<td align="center">不需要考虑</td>
-</tr>
-<tr>
-<td align="center">精度控制</td>
-<td align="center">不需要</td>
-<td align="center">需要设置 eps</td>
-</tr>
-<tr>
-<td align="center">返回值</td>
-<td align="center">根据题目要求确定</td>
-<td align="center">l 或 r 都可以</td>
-</tr>
-<tr>
-<td align="center">死循环风险</td>
-<td align="center">有</td>
-<td align="center">无</td>
-</tr>
-</tbody>
-</table></markdown-accessiblity-table>
 <hr>
 <h2>常见错误和注意事项</h2>
 <h3>整型二分的常见错误</h3>
@@ -402,60 +279,13 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 <li><strong>边界越界</strong>：区间开得太小，导致答案在区间外面</li>
 <li><strong>返回值错误</strong>：返回了 l 还是 r 搞混了</li>
 <li><strong>mid 计算溢出</strong>：当 l 和 r 都很大的时候，(l+r) 可能会溢出，应该写成 l+(r-l)/2</li>
-<li><strong>模板混用</strong>：把左闭右闭的循环条件用到左开右开上</li>
 </ol>
 <h3>浮点型二分的常见错误</h3>
 <ol>
 <li><strong>精度设置不当</strong>：eps 太大或太小都会影响结果</li>
 <li><strong>直接用==判断</strong>：忘记浮点数不能直接判等</li>
 <li><strong>循环次数过多</strong>：浮点型二分一般循环 100 次左右就够了，可以用 for 循环代替 while 循环</li>
-</ol>
-<hr>
-<h2>总结：清晰的二分查找规则</h2>
-<h3>核心记忆规则</h3>
-<p><strong>1. 判断条件决定查询类型</strong></p>
-<ul>
-<li><code class="notranslate">&gt;=</code> 或 <code class="notranslate">&gt;</code>：查找<strong>第一个</strong>满足条件的（最小值）</li>
-<li><code class="notranslate">&lt;=</code> 或 <code class="notranslate">&lt;</code>：查找<strong>最后一个</strong>满足条件的（最大值）</li>
-</ul>
-<p><strong>2. 移动方向决定边界处理</strong></p>
-<ul>
-<li>满足条件时<strong>向左</strong>移动（<code class="notranslate">r=mid-1</code>）：找更小的值（最小值）</li>
-<li>满足条件时<strong>向右</strong>移动（<code class="notranslate">l=mid+1</code>）：找更大的值（最大值）</li>
-</ul>
-<p><strong>3. 返回值规则</strong></p>
-<ul>
-<li>找<strong>最小值</strong>（第一个满足条件的）：返回 <code class="notranslate">l</code></li>
-<li>找<strong>最大值</strong>（最后一个满足条件的）：返回 <code class="notranslate">r</code></li>
-</ul>
-<h3>快速选择模板</h3>
-<p><strong>如果你只需要记住一个模板</strong>，就用这个：</p>
-<div class="highlight highlight-source-c++"><pre class="notranslate"><span class="pl-c"><span class="pl-c">//</span> 左闭右闭模板，适用于所有情况</span>
-<span class="pl-k">int</span> <span class="pl-en">binary_search</span>(<span class="pl-k">int</span> q, <span class="pl-k">bool</span> find_min) {
-    <span class="pl-k">int</span> l=<span class="pl-c1">1</span>, r=n;
-    <span class="pl-k">while</span>(l&lt;=r) {
-        <span class="pl-k">int</span> mid=l+(r-l)/<span class="pl-c1">2</span>;
-        
-        <span class="pl-k">if</span>(find_min) {
-            <span class="pl-c"><span class="pl-c">//</span> 找最小值：满足条件时向左找更小的</span>
-            <span class="pl-k">if</span>(<span class="pl-c1">condition_for_min</span>(mid, q)) r=mid-<span class="pl-c1">1</span>;
-            <span class="pl-k">else</span> l=mid+<span class="pl-c1">1</span>;
-        } <span class="pl-k">else</span> {
-            <span class="pl-c"><span class="pl-c">//</span> 找最大值：满足条件时向右找更大的  </span>
-            <span class="pl-k">if</span>(<span class="pl-c1">condition_for_max</span>(mid, q)) l=mid+<span class="pl-c1">1</span>;
-            <span class="pl-k">else</span> r=mid-<span class="pl-c1">1</span>;
-        }
-    }
-    <span class="pl-k">return</span> find_min ? l : r;
-}</pre></div>
-<h3>实际应用建议</h3>
-<ol>
-<li><strong>先确定你要找什么</strong>：最大值还是最小值？第一个还是最后一个？</li>
-<li><strong>根据目标选择条件</strong>：用 <code class="notranslate">&gt;=</code>/<code class="notranslate">&gt;</code> 找最小值，用 <code class="notranslate">&lt;=</code>/<code class="notranslate">&lt;</code> 找最大值</li>
-<li><strong>记住移动方向</strong>：找最小值时向左移动，找最大值时向右移动</li>
-<li><strong>记住返回值</strong>：最小值返回 <code class="notranslate">l</code>，最大值返回 <code class="notranslate">r</code></li>
-</ol>
-<p>记住这些要点，二分查找就不难了。多做题多练习，自然就熟练了。</p></div>
+</ol></div>
 <div style="font-size:small;margin-top:8px;float:right;"></div>
 
 <button class="btn btn-block" type="button" onclick="openComments()" id="cmButton">评论</button>
