@@ -158,8 +158,7 @@ ll a[<span class="pl-c1">200010</span>];
 			<span class="pl-k">if</span>(a[mid]&lt;=q)l2=mid;
 			<span class="pl-k">else</span> r2=mid;
 		}
-		<span class="pl-k">if</span>(l2!=<span class="pl-c1">0</span> &amp;&amp; r1!=n+<span class="pl-c1">1</span>)ans+=(l2-r1+<span class="pl-c1">1</span>);<span class="pl-c"><span class="pl-c">//</span>特判，确保查找值在数列中存在。</span>
-                                                                           <span class="pl-c"><span class="pl-c">//</span>l2==0时候整个数列都小于B，r1==n+1时，整个数列都大于B</span>
+		<span class="pl-k">if</span>(l2!=<span class="pl-c1">0</span> &amp;&amp; r1!=n+<span class="pl-c1">1</span>)ans+=(l2-r1+<span class="pl-c1">1</span>);<span class="pl-c"><span class="pl-c">//</span>l2==0时候整个数列都小于B，r1==n+1时，整个数列都大于B</span>
 	}
 	cout&lt;&lt;ans;
 	<span class="pl-k">return</span> <span class="pl-c1">0</span>;
