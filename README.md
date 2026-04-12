@@ -1,6 +1,6 @@
-# Blog Title :link: https://terryji-lab.github.io/tianruiji-lab.github.io 
+# tianrui_ji blog :link: https://terryji-lab.github.io/tianruiji-lab.github.io 
 ### :page_facing_up: [1](https://terryji-lab.github.io/tianruiji-lab.github.io/tag.html) 
 ### :speech_balloon: 0 
 ### :hibiscus: 27 
-### :alarm_clock: 2026-04-12 13:59:38 
+### :alarm_clock: 2026-04-12 14:03:26 
 ### Powered by :heart: [Gmeek](https://github.com/Meekdai/Gmeek)
