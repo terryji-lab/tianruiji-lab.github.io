@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html data-color-mode="light" data-dark-theme="dark" data-light-theme="light" lang="zh-CN">
+<head>
+    <meta content="text/html; charset=utf-8" http-equiv="content-type" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link href='https://mirrors.sustech.edu.cn/cdnjs/ajax/libs/Primer/21.0.7/primer.css' rel='stylesheet' />
+    
+    <link rel="icon" href="https://avatars.githubusercontent.com/u/234720569?v=4&size=64"><script>
+        let theme = localStorage.getItem("meek_theme") || "light";
+        document.documentElement.setAttribute("data-color-mode", theme);
+    </script>
+<meta name="description" content="# 高精度算法
+
+高精度算法主要用于处理**超出一般数据类型存储大小**的数字计算，主要思路就是**用数组来模拟竖式运算的过程**。">
+<meta property="og:title" content="高精度算法">
+<meta property="og:description" content="# 高精度算法
+
+高精度算法主要用于处理**超出一般数据类型存储大小**的数字计算，主要思路就是**用数组来模拟竖式运算的过程**。">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://terryji-lab.github.io/tianruiji-lab.github.io/post/gao-jing-du-suan-fa.html">
+<meta property="og:image" content="https://avatars.githubusercontent.com/u/234720569?v=4&size=64">
+<title>高精度算法</title>
+<link href="//unpkg.com/@wooorm/starry-night@2.1.1/style/both.css" rel="stylesheet" />
+
+
+</head>
+<style>
+body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;padding: 45px;font-size: 16px;font-family: sans-serif;line-height: 1.25;}
+#header{display:flex;padding-bottom:8px;border-bottom: 1px solid var(--borderColor-muted, var(--color-border-muted));margin-bottom: 16px;}
+#footer {margin-top:64px; text-align: center;font-size: small;}
+
+</style>
+
+<style>
+.postTitle{margin: auto 0;font-size:40px;font-weight:bold;}
+.title-right{display:flex;margin:auto 0 0 auto;}
+.title-right .circle{padding: 14px 16px;margin-right:8px;}
+#postBody{border-bottom: 1px solid var(--color-border-default);padding-bottom:36px;}
+#postBody hr{height:2px;}
+#cmButton{height:48px;margin-top:48px;}
+#comments{margin-top:64px;}
+.g-emoji{font-size:24px;}
+@media (max-width: 600px) {
+    body {padding: 8px;}
+    .postTitle{font-size:24px;}
+}
+.copy-feedback {
+    display: none;
+    position: absolute;
+    top: 10px;
+    right: 50px;
+    color: var(--color-fg-on-emphasis);
+    background-color: var(--color-fg-muted);
+    border-radius: 3px;
+    padding: 5px 8px;
+    font-size: 12px;
+}
+</style>
+
+
+
+
+<body>
+    <div id="header">
+<h1 class="postTitle">高精度算法</h1>
+<div class="title-right">
+    <a href="https://terryji-lab.github.io/tianruiji-lab.github.io" id="buttonHome" class="btn btn-invisible circle" title="首页">
+        <svg class="octicon" width="16" height="16">
+            <path id="pathHome" fill-rule="evenodd"></path>
+        </svg>
+    </a>
+    
+    <a href="https://github.com/terryji-lab/tianruiji-lab.github.io/issues/2" target="_blank" class="btn btn-invisible circle" title="Issue">
+        <svg class="octicon" width="16" height="16">
+            <path id="pathIssue" fill-rule="evenodd"></path>
+        </svg>
+    </a>
+    
+
+    <a class="btn btn-invisible circle" onclick="modeSwitch();" title="切换主题">
+        <svg class="octicon" width="16" height="16" >
+            <path id="themeSwitch" fill-rule="evenodd"></path>
+        </svg>
+    </a>
+
+</div>
+</div>
+    <div id="content">
+<div class="markdown-body" id="postBody"><h1>高精度算法</h1>
+<p>高精度算法主要用于处理<strong>超出一般数据类型存储大小</strong>的数字计算，主要思路就是<strong>用数组来模拟竖式运算的过程</strong>。我们都知道int类型的范围大概是-2^31到2^31，大概也就几十亿，如果我要算一个100位的数字加减乘除怎么办呢，这就需要用到高精度算法了。</p>
+<p>常见的高精度运算有四种，分别为：高精度加法，高精度减法，高精度乘法，高精度除法。</p>
+<p>但是要注意，其中加减乘都是<strong>高精度数与高精度数</strong>的运算，但是除法是<strong>高精度与低精度数</strong>的运算，这一点到后面会体现出来。</p>
+<p>高精度算法一般有统一的步骤：<br>
+1.<strong>使用字符串读入</strong>高精度数字（因为字符串可以读取任意长度的数字）<br>
+2.<strong>字符串翻转倒序存入数组</strong>（要模拟竖式，需要低位对齐）<br>
+3.<strong>从低位到高位进行模拟运算</strong>（除了除法以外，除法是从高位到低位）<br>
+4.<strong>倒序输出</strong>（很多时候需要处理前导0）</p>
+<p>接下来我将要详细的讲解这四种运算</p>
+<hr>
+<h2>高精度加法</h2>
+<p>从低位到高位进行的操作为 <strong>累加-&gt;进位-&gt;存余</strong>。这和我们小学学的竖式加法是一模一样的，比如计算56+98，我们先算6+8=14，取4进1，然后算5+9+1=15，所以结果是154。</p>
+<p>代码如下</p>
+<div class="highlight highlight-source-c++"><pre class="notranslate">#<span class="pl-k">include</span> <span class="pl-s"><span class="pl-pds">&lt;</span>bits/stdc++.h<span class="pl-pds">&gt;</span></span>
+<span class="pl-k">using</span> <span class="pl-k">namespace</span> <span class="pl-en">std</span><span class="pl-k">;</span>
+<span class="pl-k">int</span> A[<span class="pl-c1">505</span>];
+<span class="pl-k">int</span> B[<span class="pl-c1">505</span>];
+<span class="pl-k">int</span> C[<span class="pl-c1">505</span>];
+<span class="pl-k">int</span> <span class="pl-en">main</span>()
+{
+	string a,b;
+	cin&gt;&gt;a&gt;&gt;b;
+	<span class="pl-k">int</span> la=a.<span class="pl-c1">size</span>();
+	<span class="pl-k">int</span> lb=b.<span class="pl-c1">size</span>();
+	<span class="pl-k">for</span>(<span class="pl-k">int</span> i=<span class="pl-c1">0</span>;i&lt;la;i++)
+	{
+		A[i]=a[la-i-<span class="pl-c1">1</span>]-<span class="pl-s"><span class="pl-pds">'</span>0<span class="pl-pds">'</span></span>;<span class="pl-c"><span class="pl-c">//</span>倒序输入</span>
+	}
+	<span class="pl-k">for</span>(<span class="pl-k">int</span> i=<span class="pl-c1">0</span>;i&lt;lb;i++)
+	{
+		B[i]=b[lb-i-<span class="pl-c1">1</span>]-<span class="pl-s"><span class="pl-pds">'</span>0<span class="pl-pds">'</span></span>;
+	}
+	<span class="pl-k">int</span> lc=<span class="pl-c1">max</span>(la,lb);
+	<span class="pl-k">for</span>(<span class="pl-k">int</span> i=<span class="pl-c1">0</span>;i&lt;lc;i++)
+	{
+		C[i]+=A[i]+B[i];<span class="pl-c"><span class="pl-c">//</span>累加</span>
+		C[i+<span class="pl-c1">1</span>]+=C[i]/<span class="pl-c1">10</span>;<span class="pl-c"><span class="pl-c">//</span>进位</span>
+		C[i]%=<span class="pl-c1">10</span>;<span class="pl-c"><span class="pl-c">//</span>取余</span>
+	}
+	<span class="pl-k">if</span>(C[lc])lc++;<span class="pl-c"><span class="pl-c">//</span>处理结果长度</span>
+	<span class="pl-k">for</span>(<span class="pl-k">int</span> i=lc-<span class="pl-c1">1</span>;i&gt;=<span class="pl-c1">0</span>;i--)
+	{
+		cout&lt;&lt;C[i];<span class="pl-c"><span class="pl-c">//</span>倒序输出</span>
+	}
+	<span class="pl-k">return</span> <span class="pl-c1">0</span>;
+}</pre></div>
+<p>我来解释一下核心代码的部分，首先是<strong>倒序输入</strong>，为什么要倒序呢，因为竖式运算从低位开始，我们的数组下标0对应的是数字的最低位，这样方便进位的处理。比如数字"123"存成数组就是A[0]=3,A[1]=2,A[2]=1。</p>
+<p>然后是<strong>核心的运算逻辑</strong>，先把对应位相加，存入C[i]，这时候C[i]可能大于10，然后通过<strong>C[i+1]+=C[i]/10</strong>来实现进位，<strong>C[i]%=10</strong>来取余数。</p>
+<p>最后为什么要**判断if(C[lc])**呢，因为最高位可能产生进位，比如99+1=100，最高位进位后lc会变成3，这时候结果数组C的0、1、2位分别是0、0、1，需要正确处理。</p>
+<hr>
+<h2>高精度减法</h2>
+<p>需要先判断进行运算的数字哪一个比较大，保证<strong>大数减小数</strong>，使得计算结果为正数。如果原计算结果为负数的话需要提前输出负号。</p>
+<p>从低位到高位的操作为：<strong>求差-&gt;借位-&gt;存差</strong>。</p>
+<p>这里要注意一点，减法和加法不一样，加法不管谁大谁小结果都是正的，但是减法<strong>必须大数减小数</strong>，否则结果就是负数了，所以我们需要提前判断，如果被减数比减数小，就要交换两个数的位置并且输出一个负号。</p>
+<p>代码如下</p>
+<div class="highlight highlight-source-c++"><pre class="notranslate">#<span class="pl-k">include</span> <span class="pl-s"><span class="pl-pds">&lt;</span>bits/stdc++.h<span class="pl-pds">&gt;</span></span>
+<span class="pl-k">using</span> <span class="pl-k">namespace</span> <span class="pl-en">std</span><span class="pl-k">;</span>
+<span class="pl-k">int</span> A[<span class="pl-c1">100100</span>];
+<span class="pl-k">int</span> B[<span class="pl-c1">100100</span>];
+<span class="pl-k">int</span> C[<span class="pl-c1">100100</span>];
+<span class="pl-k">int</span> <span class="pl-en">main</span>()
+{
+    string a,b;
+    cin&gt;&gt;a&gt;&gt;b;
+    <span class="pl-k">int</span> la=a.<span class="pl-c1">size</span>(),lb=b.<span class="pl-c1">size</span>();
+    <span class="pl-k">for</span>(<span class="pl-k">int</span> i=<span class="pl-c1">0</span>;i&lt;la;i++)
+    {
+        A[i]=a[la-i-<span class="pl-c1">1</span>]-<span class="pl-s"><span class="pl-pds">'</span>0<span class="pl-pds">'</span></span>;
+    }
+    <span class="pl-k">for</span>(<span class="pl-k">int</span> i=<span class="pl-c1">0</span>;i&lt;lb;i++)
+    {
+        B[i]=b[lb-i-<span class="pl-c1">1</span>]-<span class="pl-s"><span class="pl-pds">'</span>0<span class="pl-pds">'</span></span>;
+    }
+    <span class="pl-k">if</span>(!<span class="pl-c1">cmp</span>(A,la,B,lb))<span class="pl-c"><span class="pl-c">//</span>若A&lt;B就交换，提前输出负号</span>
+    {
+        <span class="pl-c1">swap</span>(A,B);
+        <span class="pl-c1">swap</span>(la,lb);
+        cout&lt;&lt;<span class="pl-s"><span class="pl-pds">'</span>-<span class="pl-pds">'</span></span>;
+    }
+    <span class="pl-k">for</span>(<span class="pl-k">int</span> i=<span class="pl-c1">0</span>;i&lt;la;i++)
+    {
+        <span class="pl-k">if</span>(A[i]&lt;B[i])<span class="pl-c"><span class="pl-c">//</span>借位操作</span>
+        {
+            A[i]+=<span class="pl-c1">10</span>;
+            A[i+<span class="pl-c1">1</span>]--;
+        }
+        C[i]=A[i]-B[i];
+    }
+    <span class="pl-k">int</span> lc=la;
+    <span class="pl-k">while</span>(lc &amp;&amp; C[lc]==<span class="pl-c1">0</span>)lc--;<span class="pl-c"><span class="pl-c">//</span>处理前导0</span>
+    <span class="pl-k">for</span>(<span class="pl-k">int</span> i=lc;i&gt;=<span class="pl-c1">0</span>;i--)
+    {
+        cout&lt;&lt;C[i];<span class="pl-c"><span class="pl-c">//</span>倒序输出</span>
+    }
+    <span class="pl-k">return</span> <span class="pl-c1">0</span>;
+}</pre></div>
+<p><strong>核心的借位操作</strong>是这样的，如果当前位被减数比减数小，就需要向高位借1，当作10加到当前位上。比如计算100-1，先看个位0-1不够，向十位借1变成10-1=9，十位变成0-0=0，百位1-0=1，结果是99。</p>
+<p>最后那个<strong>while循环是用来处理前导0</strong>的，比如计算100-100，如果不处理前导0会输出"001"这样的结果，我们从最高位开始找第一个非零的位置，去掉前面的0。</p>
+<hr>
+<h2>高精度乘法</h2>
+<p>从低位到高位：<strong>累加乘积-&gt;进位-&gt;求余</strong>。</p>
+<p>乘法需要注意的是每一次相乘得到的结果应该存在结果数组的<strong>哪一个位置</strong>。这个和加减法不一样，乘法的位置关系比较特殊，<strong>A数组的第i位乘以B数组的第j位，结果要存到C数组的i+j位</strong>。</p>
+<p>代码如下</p>
+<div class="highlight highlight-source-c++"><pre class="notranslate">#<span class="pl-k">include</span> <span class="pl-s"><span class="pl-pds">&lt;</span>bits/stdc++.h<span class="pl-pds">&gt;</span></span>
+<span class="pl-k">using</span> <span class="pl-k">namespace</span> <span class="pl-en">std</span><span class="pl-k">;</span>
+<span class="pl-k">int</span> A[<span class="pl-c1">2010</span>];
+<span class="pl-k">int</span> B[<span class="pl-c1">2010</span>];
+<span class="pl-k">int</span> C[<span class="pl-c1">4010</span>];<span class="pl-c"><span class="pl-c">//</span>注意结果数组的大小</span>
+<span class="pl-k">int</span> <span class="pl-en">main</span>()
+{
+    string a,b;
+    cin&gt;&gt;a&gt;&gt;b;
+    <span class="pl-k">int</span> la=a.<span class="pl-c1">size</span>();
+    <span class="pl-k">int</span> lb=b.<span class="pl-c1">size</span>();
+    <span class="pl-k">for</span>(<span class="pl-k">int</span> i=<span class="pl-c1">0</span>;i&lt;la;i++)
+    {
+        A[i]=a[la-i-<span class="pl-c1">1</span>]-<span class="pl-s"><span class="pl-pds">'</span>0<span class="pl-pds">'</span></span>;
+    }
+    <span class="pl-k">for</span>(<span class="pl-k">int</span> i=<span class="pl-c1">0</span>;i&lt;lb;i++)
+    {
+        B[i]=b[lb-i-<span class="pl-c1">1</span>]-<span class="pl-s"><span class="pl-pds">'</span>0<span class="pl-pds">'</span></span>;
+    }
+    <span class="pl-k">for</span>(<span class="pl-k">int</span> i=<span class="pl-c1">0</span>;i&lt;la;i++)
+    {
+        <span class="pl-k">for</span>(<span class="pl-k">int</span> j=<span class="pl-c1">0</span>;j&lt;lb;j++)
+        {
+            C[i+j]+=A[i]*B[j];<span class="pl-c"><span class="pl-c">//</span>累加乘积</span>
+            C[i+j+<span class="pl-c1">1</span>]+=C[i+j]/<span class="pl-c1">10</span>;<span class="pl-c"><span class="pl-c">//</span>进位</span>
+            C[i+j]%=<span class="pl-c1">10</span>;<span class="pl-c"><span class="pl-c">//</span>取余</span>
+        }
+    }
+    <span class="pl-k">int</span> lc=<span class="pl-c1">3999</span>;
+    <span class="pl-k">while</span>(lc &amp;&amp; C[lc]==<span class="pl-c1">0</span>)lc--;<span class="pl-c"><span class="pl-c">//</span>处理前导0</span>
+    <span class="pl-k">for</span>(<span class="pl-k">int</span> i=lc;i&gt;=<span class="pl-c1">0</span>;i--)
+    {
+        cout&lt;&lt;C[i];
+    }
+    <span class="pl-k">return</span> <span class="pl-c1">0</span>;
+}</pre></div>
+<p>我来详细解释一下这个<strong>位置关系</strong>，比如计算123×45，123存成[3,2,1]，45存成[5,4]。3×5=15存到C[0]=5,C[1]=1；3×4=12加上之前的进位1变成13，存到C[1]=3,C[2]=1；2×5=10存到C[1]+=10变成C[1]=3+10=13，进位后C[2]=1+1=2，C[1]=3；2×4=8加上进位C[2]+=8变成C[2]=2+8=10，进位后C[3]=1，C[2]=0；1×5=5加上进位C[2]+=5变成C[2]=5；1×4=4加上进位C[3]+=4变成C[3]=5。最终C数组是[5,3,5,5]，倒序输出得到5535，验证一下123×45确实是5535。</p>
+<p>关于<strong>结果数组的大小为什么要开la+lb</strong>呢，因为两个数相乘最大位数是两个数的位数之和，比如99×99=9801，三位数乘以三位数最多得到四位数，所以结果数组开la+lb就够了。</p>
+<hr>
+<h2>高精度除法（高精度/低精度）</h2>
+<p><strong>计算被除数-&gt;存商-&gt;求余数</strong></p>
+<p>这里要特别强调一下，除法是<strong>高精度除以低精度</strong>，不是高精度除以高精度。为什么呢，因为高精度除以高精度的算法非常复杂，一般比赛里面也不会让你写，高精度除以低精度就简单多了。</p>
+<p>代码如下</p>
+<div class="highlight highlight-source-c++"><pre class="notranslate">#<span class="pl-k">include</span> <span class="pl-s"><span class="pl-pds">&lt;</span>bits/stdc++.h<span class="pl-pds">&gt;</span></span>
+<span class="pl-k">using</span> <span class="pl-k">namespace</span> <span class="pl-en">std</span><span class="pl-k">;</span>
+<span class="pl-k">int</span> A[<span class="pl-c1">5010</span>];
+<span class="pl-k">int</span>  C[<span class="pl-c1">5010</span>];
+<span class="pl-k">int</span> b;<span class="pl-c"><span class="pl-c">//</span>高精度除以低精度</span>
+<span class="pl-k">signed</span> <span class="pl-en">main</span>()
+{
+    string a;
+    cin&gt;&gt;a&gt;&gt;b;
+    <span class="pl-k">int</span> la=a.<span class="pl-c1">size</span>();
+    <span class="pl-k">for</span>(<span class="pl-k">int</span> i=<span class="pl-c1">0</span>;i&lt;la;i++)
+    {
+        A[i]=a[la-i-<span class="pl-c1">1</span>]-<span class="pl-s"><span class="pl-pds">'</span>0<span class="pl-pds">'</span></span>;
+    }
+    <span class="pl-k">int</span> r=<span class="pl-c1">0</span>;<span class="pl-c"><span class="pl-c">//</span>被除数</span>
+    <span class="pl-k">for</span>(<span class="pl-k">int</span> i=la-<span class="pl-c1">1</span>;i&gt;=<span class="pl-c1">0</span>;i--)<span class="pl-c"><span class="pl-c">//</span>从高位向低位</span>
+    {
+        r=r*<span class="pl-c1">10</span>+A[i];<span class="pl-c"><span class="pl-c">//</span>计算被除数</span>
+        C[i]=r/b;<span class="pl-c"><span class="pl-c">//</span>存商</span>
+        r%=b;<span class="pl-c"><span class="pl-c">//</span>求余</span>
+    }
+    <span class="pl-k">int</span> lc=la;
+    <span class="pl-k">while</span>(lc &amp;&amp; C[lc]==<span class="pl-c1">0</span>)lc--;<span class="pl-c"><span class="pl-c">//</span>处理前导0</span>
+    <span class="pl-k">for</span>(<span class="pl-k">int</span> i=lc;i&gt;=<span class="pl-c1">0</span>;i--)
+    {
+        cout&lt;&lt;C[i];
+    }
+    <span class="pl-k">return</span> <span class="pl-c1">0</span>;
+}</pre></div>
+<p><strong>除法的逻辑和加减乘都不一样，是从高位向低位处理的</strong>。r是余数，初始化为0。然后对于每一位，<strong>把上一位的余数乘以10加上当前位的数字，作为新的被除数</strong>，用这个被除数除以b就得到当前位的商，余数继续留到下一位。</p>
+<p>举个例子，计算123÷7。从最高位开始，r=0，r=r<em>10+1=1，1/7=0余1，所以最高位商是0；然后r=1，r=r</em>10+2=12，12/7=1余5，所以第二位商是1；然后r=5，r=r*10+3=53，53/7=7余4，所以第三位商是7。最终商是017也就是17，余数是4，验证一下17×7+4=119+4=123，正确。</p>
+<hr>
+<h2>总结</h2>
+<p>到这里四种高精度算法就讲完了，简单总结一下：</p>
+<p><strong>加法：低位到高位，累加进位取余</strong><br>
+<strong>减法：低位到高位，借位求差，记得处理负数</strong><br>
+<strong>乘法：低位到高位，注意i+j的位置关系</strong><br>
+<strong>除法：高位到低位，用余数构建被除数</strong></p>
+<p>四种算法的<strong>数组大小</strong>也很重要，<strong>加法开max(la,lb)+1，减法开max(la,lb)，乘法开la+lb，除法开la</strong>。</p>
+<p>记住这些要点，高精度算法就不难了。</p></div>
+<div style="font-size:small;margin-top:8px;float:right;"></div>
+
+<button class="btn btn-block" type="button" onclick="openComments()" id="cmButton">评论</button>
+<div class="comments" id="comments"></div>
+
+</div>
+    <div id="footer"><div id="footer1">Copyright © <span id="copyrightYear"></span> <a href="https://terryji-lab.github.io/tianruiji-lab.github.io">tianrui_ji blog</a></div>
+<div id="footer2">
+    <span id="runday"></span><span>Powered by <a href="https://meekdai.com/Gmeek.html" target="_blank">Gmeek</a></span>
+</div>
+
+<script>
+var now=new Date();
+document.getElementById("copyrightYear").innerHTML=now.getFullYear();
+
+if(""!=""){
+    var startSite=new Date("");
+    var diff=now.getTime()-startSite.getTime();
+    var diffDay=Math.floor(diff/(1000*60*60*24));
+    document.getElementById("runday").innerHTML="网站运行 "+diffDay+" 天"+" • ";
+}
+</script></div>
+</body>
+<script>
+var IconList={'sun': 'M8 10.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5zM8 12a4 4 0 100-8 4 4 0 000 8zM8 0a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0V.75A.75.75 0 018 0zm0 13a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0v-1.5A.75.75 0 018 13zM2.343 2.343a.75.75 0 011.061 0l1.06 1.061a.75.75 0 01-1.06 1.06l-1.06-1.06a.75.75 0 010-1.06zm9.193 9.193a.75.75 0 011.06 0l1.061 1.06a.75.75 0 01-1.06 1.061l-1.061-1.06a.75.75 0 010-1.061zM16 8a.75.75 0 01-.75.75h-1.5a.75.75 0 010-1.5h1.5A.75.75 0 0116 8zM3 8a.75.75 0 01-.75.75H.75a.75.75 0 010-1.5h1.5A.75.75 0 013 8zm10.657-5.657a.75.75 0 010 1.061l-1.061 1.06a.75.75 0 11-1.06-1.06l1.06-1.06a.75.75 0 011.06 0zm-9.193 9.193a.75.75 0 010 1.06l-1.06 1.061a.75.75 0 11-1.061-1.06l1.06-1.061a.75.75 0 011.061 0z', 'moon': 'M9.598 1.591a.75.75 0 01.785-.175 7 7 0 11-8.967 8.967.75.75 0 01.961-.96 5.5 5.5 0 007.046-7.046.75.75 0 01.175-.786zm1.616 1.945a7 7 0 01-7.678 7.678 5.5 5.5 0 107.678-7.678z', 'sync': 'M1.705 8.005a.75.75 0 0 1 .834.656 5.5 5.5 0 0 0 9.592 2.97l-1.204-1.204a.25.25 0 0 1 .177-.427h3.646a.25.25 0 0 1 .25.25v3.646a.25.25 0 0 1-.427.177l-1.38-1.38A7.002 7.002 0 0 1 1.05 8.84a.75.75 0 0 1 .656-.834ZM8 2.5a5.487 5.487 0 0 0-4.131 1.869l1.204 1.204A.25.25 0 0 1 4.896 6H1.25A.25.25 0 0 1 1 5.75V2.104a.25.25 0 0 1 .427-.177l1.38 1.38A7.002 7.002 0 0 1 14.95 7.16a.75.75 0 0 1-1.49.178A5.5 5.5 0 0 0 8 2.5Z', 'home': 'M6.906.664a1.749 1.749 0 0 1 2.187 0l5.25 4.2c.415.332.657.835.657 1.367v7.019A1.75 1.75 0 0 1 13.25 15h-3.5a.75.75 0 0 1-.75-.75V9H7v5.25a.75.75 0 0 1-.75.75h-3.5A1.75 1.75 0 0 1 1 13.25V6.23c0-.531.242-1.034.657-1.366l5.25-4.2Zm1.25 1.171a.25.25 0 0 0-.312 0l-5.25 4.2a.25.25 0 0 0-.094.196v7.019c0 .138.112.25.25.25H5.5V8.25a.75.75 0 0 1 .75-.75h3.5a.75.75 0 0 1 .75.75v5.25h2.75a.25.25 0 0 0 .25-.25V6.23a.25.25 0 0 0-.094-.195Z', 'github': 'M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z', 'copy': 'M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 0 1 0 1.5h-1.5a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-1.5a.75.75 0 0 1 1.5 0v1.5A1.75 1.75 0 0 1 9.25 16h-7.5A1.75 1.75 0 0 1 0 14.25Z M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0 1 14.25 11h-7.5A1.75 1.75 0 0 1 5 9.25Zm1.75-.25a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-7.5a.25.25 0 0 0-.25-.25Z', 'check': 'M13.78 4.22a.75.75 0 0 1 0 1.06l-7.25 7.25a.75.75 0 0 1-1.06 0L2.22 9.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018L6 10.94l6.72-6.72a.75.75 0 0 1 1.06 0Z'};
+var utterancesLoad=0;
+
+let themeSettings={
+    "dark": ["dark","moon","#00f0ff","dark-blue"],
+    "light": ["light","sun","#ff5000","github-light"],
+    "auto": ["auto","sync","","preferred-color-scheme"]
+};
+function changeTheme(mode, icon, color, utheme){
+    document.documentElement.setAttribute("data-color-mode",mode);
+    document.getElementById("themeSwitch").setAttribute("d",value=IconList[icon]);
+    document.getElementById("themeSwitch").parentNode.style.color=color;
+    if(utterancesLoad==1){utterancesTheme(utheme);}
+}
+function modeSwitch(){
+    let currentMode=document.documentElement.getAttribute('data-color-mode');
+    let newMode = currentMode === "light" ? "dark" : currentMode === "dark" ? "auto" : "light";
+    localStorage.setItem("meek_theme", newMode);
+    if(themeSettings[newMode]){
+        changeTheme(...themeSettings[newMode]);
+    }
+}
+function utterancesTheme(theme){
+    const message={type:'set-theme',theme: theme};
+    const iframe=document.getElementsByClassName('utterances-frame')[0];
+    iframe.contentWindow.postMessage(message,'https://utteranc.es');
+}
+if(themeSettings[theme]){changeTheme(...themeSettings[theme]);}
+console.log("\n %c Gmeek last https://github.com/Meekdai/Gmeek \n","padding:5px 0;background:#02d81d;color:#fff");
+</script>
+
+<script>
+document.getElementById("pathHome").setAttribute("d",IconList["home"]);
+document.getElementById("pathIssue").setAttribute("d",IconList["github"]);
+
+
+
+function openComments(){
+    cm=document.getElementById("comments");
+    cmButton=document.getElementById("cmButton");
+    cmButton.disabled=true;
+    cmButton.innerHTML="loading";
+    span=document.createElement("span");
+    span.setAttribute("class","AnimatedEllipsis");
+    cmButton.appendChild(span);
+
+    script=document.createElement("script");
+    script.setAttribute("src","https://utteranc.es/client.js");
+    script.setAttribute("repo","terryji-lab/tianruiji-lab.github.io");
+    script.setAttribute("issue-term","title");
+    
+    if(localStorage.getItem("meek_theme")=="dark"){script.setAttribute("theme","dark-blue");}
+    else if(localStorage.getItem("meek_theme")=="light") {script.setAttribute("theme","github-light");}
+    else{script.setAttribute("theme","preferred-color-scheme");}
+    
+    script.setAttribute("crossorigin","anonymous");
+    script.setAttribute("async","");
+    cm.appendChild(script);
+
+    int=self.setInterval("iFrameLoading()",200);
+}
+
+function iFrameLoading(){
+    var utterances=document.getElementsByClassName('utterances');
+    if(utterances.length==1){
+        if(utterances[0].style.height!=""){
+            utterancesLoad=1;
+            int=window.clearInterval(int);
+            document.getElementById("cmButton").style.display="none";
+            console.log("utterances Load OK");
+        }
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const createClipboardHTML = (codeContent, additionalClasses = '') => `
+        <pre class="notranslate"><code class="notranslate">${codeContent}</code></pre>
+        <div class="clipboard-container position-absolute right-0 top-0 ${additionalClasses}">
+            <clipboard-copy class="ClipboardButton btn m-2 p-0" role="button" style="display: inherit;">
+                <svg height="16" width="16" class="octicon octicon-copy m-2"><path d="${IconList["copy"]}"></path></svg>
+                <svg height="16" width="16" class="octicon octicon-check color-fg-success m-2 d-none"><path d="${IconList["check"]}"></path></svg>
+            </clipboard-copy>
+            <div class="copy-feedback">Copied!</div>
+        </div>
+    `;
+
+    const handleCodeElements = (selector = '') => {
+        document.querySelectorAll(selector).forEach(codeElement => {
+            const codeContent = codeElement.innerHTML;
+            const newStructure = document.createElement('div');
+            newStructure.className = 'snippet-clipboard-content position-relative overflow-auto';
+            newStructure.innerHTML = createClipboardHTML(codeContent);
+
+            const parentElement = codeElement.parentElement;
+            if (selector.includes('highlight')) {
+                parentElement.insertBefore(newStructure, codeElement.nextSibling);
+                parentElement.removeChild(codeElement);
+            } else {
+                parentElement.parentElement.replaceChild(newStructure, parentElement);
+            }
+        });
+    };
+
+    handleCodeElements('pre.notranslate > code.notranslate');
+    handleCodeElements('div.highlight > pre.notranslate');
+
+    let currentFeedback = null;
+    document.querySelectorAll('clipboard-copy').forEach(copyButton => {
+        copyButton.addEventListener('click', () => {
+            const codeContent = copyButton.closest('.snippet-clipboard-content').innerText;
+            const tempTextArea = document.createElement('textarea');
+            tempTextArea.value = codeContent;
+            document.body.appendChild(tempTextArea);
+            tempTextArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempTextArea);
+
+            const copyIcon = copyButton.querySelector('.octicon-copy');
+            const checkIcon = copyButton.querySelector('.octicon-check');
+            const copyFeedback = copyButton.nextElementSibling;
+
+            if (currentFeedback && currentFeedback !== copyFeedback) {currentFeedback.style.display = 'none';}
+            currentFeedback = copyFeedback;
+
+            copyIcon.classList.add('d-none');
+            checkIcon.classList.remove('d-none');
+            copyFeedback.style.display = 'block';
+            copyButton.style.borderColor = 'var(--color-success-fg)';
+
+            setTimeout(() => {
+                copyIcon.classList.remove('d-none');
+                checkIcon.classList.add('d-none');
+                copyFeedback.style.display = 'none';
+                copyButton.style.borderColor = '';
+            }, 2000);
+        });
+    });
+});
+
+</script>
+
+
+</html>
