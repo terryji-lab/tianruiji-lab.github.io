@@ -98,7 +98,7 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 <p>而浮点型二分则是夹逼型的二分，需要特别注意精度问题。</p>
 <p>在浮点型二分中，需要特别注意精度问题，避免出现精度错误导致的错误结果。</p>
 <hr>
-<h2>整型二分模板一：左闭右闭（最常用）</h2>
+<h2>整型二分模板一：左闭右闭</h2>
 <p>这是<strong>最推荐</strong>的模板，最好理解也最好写。</p>
 <div class="highlight highlight-source-c++"><pre class="notranslate"><span class="pl-k">int</span> <span class="pl-en">find</span>(<span class="pl-k">int</span> q)
 {
@@ -156,7 +156,7 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 <li>返回 l-1=3，对应 a[3]=5，正确</li>
 </ul>
 <hr>
-<h2>整型二分模板三：左开右开（之前讲过）</h2>
+<h2>整型二分模板三：左开右开</h2>
 <div class="highlight highlight-source-c++"><pre class="notranslate"><span class="pl-k">int</span> <span class="pl-en">find</span>(<span class="pl-k">int</span> q)
 {
     <span class="pl-k">int</span> l=<span class="pl-c1">0</span>, r=n+<span class="pl-c1">1</span>;    <span class="pl-c"><span class="pl-c">//</span> 查找范围为 [1,n]，要开成 (0,n+1) 的开区间</span>
