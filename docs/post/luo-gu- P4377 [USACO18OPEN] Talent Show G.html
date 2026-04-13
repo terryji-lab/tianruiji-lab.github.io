@@ -121,7 +121,9 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 <p>在这个例子中，总体来看最佳的才艺与重量的比值应该是仅用一头才艺值为 $11$、重量为 $10$ 的奶牛，但是由于我们需要至少 $15$ 单位的重量，最优解最终为使用这头奶牛加上才艺值为 $21$、重量为 $20$ 的奶牛。这样的话才艺与重量的比值为 $\frac{11+21}{10+20}=\frac{32}{30} = 1.0666\dots$，乘以 $1000$ 向下取整之后得到 $1066$。</p>
 <h2>分析</h2>
 <p>分数规划的题目。这道题的约束条件<strong>所有奶牛的总重量不小于</strong> $W$ ，不是简单的约束选择多少个元素，所以<strong>不能直接使用贪心排序选择元素</strong>。让我们回顾一下分数规划的模板，这道题我们要求一个<strong>分数的最大值</strong>，那么我们需要保证： $$\sum w_i \cdot (t_i - x w_i) \geq 0$$  这道题的分子是t，分母是w，我们可以考虑使用<strong>01背包</strong>的思想。<br>
-我们可以把每一头牛看作重量为 $$\ w_i $$ ，价值为 $$\ (t_i - x w_i) $$ 的一件物品，我们要求的就是在<strong>总容量为W的情况下能容纳物品的最大价值</strong>。事实上道题还要复杂一点，因为题目要求的是<strong>所有奶牛的总重量不小于</strong> $W$ ，而不是总容量为W，我们需要把所有<strong>重量大于W的情况看作重量为W来处理</strong>。最后我们<strong>判断在容量大于等于W时价值的总和是否大于等于0，大于等于0成立，否则不成立</strong>，之后使用二分继续搜索。代码如下</p>
+我们可以把每一头牛看作重量为 $$\ w_i $$ ，价值为 $$\ (t_i - x w_i) $$ 的一件物品，我们要求的就是在<strong>总容量为W的情况下能容纳物品的最大价值</strong>。事实上道题还要复杂一点，因为题目要求的是<strong>所有奶牛的总重量不小于</strong> $W$ ，而不是总容量为W，我们需要把所有<strong>重量大于W的情况看作重量为W来处理</strong>。最后我们<strong>判断在容量大于等于W时价值的总和是否大于等于0，大于等于0成立，否则不成立</strong>，之后使用二分继续搜索。<br>
+这里dp数组的初始化真的很难理解，网上的很多解释都很牵强。为什么dp[0]要初始化为0，其余位置初始化为负无穷？<strong>我的评价是自己在草稿纸上模拟两遍然后直接背下来就完事了</strong>。<br>
+代码如下</p>
 <div class="highlight highlight-source-c++"><pre class="notranslate">#<span class="pl-k">include</span> <span class="pl-s"><span class="pl-pds">&lt;</span>bits/stdc++.h<span class="pl-pds">&gt;</span></span>
 <span class="pl-k">using</span> <span class="pl-k">namespace</span> <span class="pl-en">std</span><span class="pl-k">;</span>
 
