@@ -63,9 +63,9 @@ const double eps = 1e-8;
 const int MAXW = 1010;
 
 int n, W;
-int w[255];
+int w[255];//w与t都是整数
 int t[255];
-double v[255];
+double v[255];//t[i]-x*w[i]是浮点数，因为x是浮点数
 double dp[MAXW];
 
 bool check(double x)

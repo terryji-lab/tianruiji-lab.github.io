@@ -131,9 +131,9 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 <span class="pl-k">const</span> <span class="pl-k">int</span> MAXW = <span class="pl-c1">1010</span>;
 
 <span class="pl-k">int</span> n, W;
-<span class="pl-k">int</span> w[<span class="pl-c1">255</span>];
+<span class="pl-k">int</span> w[<span class="pl-c1">255</span>];<span class="pl-c"><span class="pl-c">//</span>w与t都是整数</span>
 <span class="pl-k">int</span> t[<span class="pl-c1">255</span>];
-<span class="pl-k">double</span> v[<span class="pl-c1">255</span>];
+<span class="pl-k">double</span> v[<span class="pl-c1">255</span>];<span class="pl-c"><span class="pl-c">//</span>t[i]-x*w[i]是浮点数，因为x是浮点数</span>
 <span class="pl-k">double</span> dp[MAXW];
 
 <span class="pl-k">bool</span> <span class="pl-en">check</span>(<span class="pl-k">double</span> x)
