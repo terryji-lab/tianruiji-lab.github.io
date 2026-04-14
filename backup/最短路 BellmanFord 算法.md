@@ -56,9 +56,9 @@ bool bellmanford(int s)
 				}
 			}
 		}
-		if(!flag)break;//如果这一轮没有进行松弛说明已经全部到达最短路径，退出循环
+		if(!flag)break;//没有进行松弛说明已经全部到达最短路径，退出循环，如果没有负权环的话n-1轮就会退出，flag为false
 	}
-	return flag;//找到所有点的最短路径最多需要n-1轮，如果第n轮还进行了松弛操作（flag为true）说明有负权环，最短路径不存在
+	return flag;//找到所有点的最短路径最多需要n-1轮，如果第n轮还进行了松弛操作说明有负权环，最短路径不存在，flag为true
 }
 int main()
 {
