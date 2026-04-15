@@ -128,6 +128,8 @@ $$</p>
 </code></pre>
 <hr>
 <p>提示：本题存在 $O(nm)$ 的做法，但是 $O(nm\log n)$ 的做法也可以通过。</p>
+<h2>感叹</h2>
+<p>一定要注意精度，刚开始把eps开cheng1e-13，疯狂TLE，卡了半天没找到问题，最后改成1e-10就过了。</p>
 <h2>分析</h2>
 <p>我们要求圈内权重之和和边数之和的比值的最小值，很明显是一个<strong>分数规划最小化问题</strong>，使用<strong>二分法搜索合法分数值<code class="notranslate">x</code></strong>。这里我们可以把每条边的<strong>权重看作<code class="notranslate">w-x*c</code></strong>，这样只需要最后的<strong>路径权重和小于等于0即可，转化为最小路径问题</strong>，并且这个最小路径又小于等于0，说明我们其实要做的就是<strong>判断这个环是不是一个负权环或者0权环</strong>。因为不是负权环或者0权环的话，环的权重和是不可能小于等于0的。判断是否有负权环的方法，自然想到使用<strong>SPFA算法</strong>。<br>
 代码如下</p>
@@ -192,7 +194,139 @@ vector&lt;edge&gt; e[N];
     <span class="pl-k">return</span> <span class="pl-c1">0</span>;
 }</pre></div>
 <p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/847d1ad6-980b-4fd5-b14a-0e2f646ac4dc"><img width="1344" height="449" alt="Image" src="https://github.com/user-attachments/assets/847d1ad6-980b-4fd5-b14a-0e2f646ac4dc" style="max-width: 100%; height: auto; max-height: 449px;"></a></p>
-<p>最后我们发现会TLE，因为使用bfs形式的SPFA算法一个一个枚举出发点进行判断实在是太慢了。</p></div>
+<p>最后我们发现会TLE，因为使用bfs形式的SPFA算法一个一个枚举出发点进行判断实在是太慢了。那么接下来我会介绍两种优化的方法都可以通过这道题。</p>
+<h2>方法一：创建虚拟起点</h2>
+<p>因为是<strong>有向图，纵使图是连通的也无法通过一个点遍历整个图</strong>，因此一般的SPFA算法就会遇到反复尝试起点导致超时的问题。对此，我们可以创建一个<strong>虚拟起点，它与所有的节点都相连，并且路径权重都为0</strong>，在一开始我们对这个虚拟点进行松弛操作，<strong>直接把所有节点都加入队列</strong>，避免一次一次的重复SPFA。<strong>当然使用这种方法也会让<code class="notranslate">d[]</code>数组失去意义就算负权环不存在</strong></p>
+<ul>
+<li>虚拟起点对所有节点的边权为0，并且是有向图，没有节点指向虚拟起点<strong>不会人为制造新的负权环</strong></li>
+<li>从虚拟起点出发，<strong>可以一次性覆盖所有节点</strong></li>
+<li>任何位置存在负环<strong>都可以从虚拟起点到达</strong></li>
+</ul>
+<p>代码实现如下</p>
+<div class="highlight highlight-source-c++"><pre class="notranslate">#<span class="pl-k">include</span> <span class="pl-s"><span class="pl-pds">&lt;</span>bits/stdc++.h<span class="pl-pds">&gt;</span></span>
+<span class="pl-k">using</span> <span class="pl-k">namespace</span> <span class="pl-en">std</span><span class="pl-k">;</span>
+<span class="pl-k">const</span> <span class="pl-k">int</span> N=<span class="pl-c1">3010</span>;
+<span class="pl-k">const</span> <span class="pl-k">double</span> eps=<span class="pl-c1">1e-10</span>;
+<span class="pl-k">int</span> n,m;
+<span class="pl-k">struct</span> <span class="pl-en">edge</span>{<span class="pl-k">int</span> v;<span class="pl-k">double</span> w;};
+vector&lt;edge&gt; e[N];
+<span class="pl-k">double</span> d[N];
+<span class="pl-k">int</span> cnt[N];
+<span class="pl-k">bool</span> in_que[N];
+<span class="pl-k">bool</span> <span class="pl-en">SPFA</span>(<span class="pl-k">double</span> x)
+{
+    <span class="pl-c1">fill</span>(cnt,cnt+N,<span class="pl-c1">0</span>);<span class="pl-c"><span class="pl-c">//</span>计数初始化为0</span>
+    <span class="pl-c1">fill</span>(in_que,in_que+N,<span class="pl-c1">false</span>);
+    <span class="pl-c1">fill</span>(d,d+N,<span class="pl-c1">0</span>);<span class="pl-c"><span class="pl-c">//</span>距离初始化为0</span>
+    queue&lt;<span class="pl-k">int</span>&gt; q;
+    <span class="pl-k">for</span>(<span class="pl-k">int</span> i=<span class="pl-c1">1</span>;i&lt;=n;i++)<span class="pl-c"><span class="pl-c">//</span>全部入队</span>
+    {
+        q.<span class="pl-c1">push</span>(i);
+        in_que[i]=<span class="pl-c1">true</span>;
+    }
+    <span class="pl-k">while</span>(!q.<span class="pl-c1">empty</span>())
+    {
+        <span class="pl-k">int</span> cur=q.<span class="pl-c1">front</span>();
+        q.<span class="pl-c1">pop</span>();in_que[cur]=<span class="pl-c1">false</span>;
+        <span class="pl-k">for</span>(<span class="pl-k">auto</span> it=e[cur].<span class="pl-c1">begin</span>();it!=e[cur].<span class="pl-c1">end</span>();++it)
+        {
+            <span class="pl-k">int</span> v=it-&gt;<span class="pl-smi">v</span>;
+            <span class="pl-k">double</span> w=it-&gt;<span class="pl-smi">w</span>-x;
+            <span class="pl-k">if</span>(d[v]-(d[cur]+w)&gt;-eps)
+            {
+                d[v]=d[cur]+w;
+                cnt[v]=cnt[cur]+<span class="pl-c1">1</span>;
+                <span class="pl-k">if</span>(cnt[v]&gt;=n)<span class="pl-k">return</span> <span class="pl-c1">true</span>;<span class="pl-c"><span class="pl-c">//</span>上面我们把cnt初始化为0，表示除去和虚拟起点的边外到达这个点最小距离经过的边，所以还是不大于n-1。也可以把上面的cnt初始化为1，这里就是不大于n。</span>
+                <span class="pl-k">if</span>(!in_que[v])q.<span class="pl-c1">push</span>(v),in_que[v]=<span class="pl-c1">true</span>;
+            }
+        }
+    }
+    <span class="pl-k">return</span> <span class="pl-c1">false</span>;
+}
+<span class="pl-k">int</span> <span class="pl-en">main</span>()
+{
+    cin&gt;&gt;n&gt;&gt;m;
+    <span class="pl-k">for</span>(<span class="pl-k">int</span> i=<span class="pl-c1">1</span>;i&lt;=m;i++)
+    {
+        <span class="pl-k">int</span> a,b;
+        <span class="pl-k">double</span> c;
+        cin&gt;&gt;a&gt;&gt;b&gt;&gt;c;
+        e[a].<span class="pl-c1">push_back</span>({b,c});
+    }
+    <span class="pl-k">double</span> l=-<span class="pl-c1">1e7</span>-<span class="pl-c1">5</span>,r=<span class="pl-c1">1e7</span>+<span class="pl-c1">5</span>;
+    <span class="pl-k">while</span>(r-l&gt;eps)
+    {
+        <span class="pl-k">double</span> mid=l+(r-l)/<span class="pl-c1">2</span>;
+        <span class="pl-k">if</span>(<span class="pl-c1">SPFA</span>(mid))r=mid;
+        <span class="pl-k">else</span> l=mid;
+    }
+    cout&lt;&lt;fixed&lt;&lt;<span class="pl-c1">setprecision</span>(<span class="pl-c1">8</span>)&lt;&lt;r;
+    <span class="pl-k">return</span> <span class="pl-c1">0</span>;
+}</pre></div>
+<h2>方法二：深度优先搜索</h2>
+<p>这是用于判断负权环更常见的算法。我们从一个点出发，然后一条路走到黑。<strong>如果下一个点能被当前点松弛，就前往下一个点，如果这个点还在递归过程中，就说明产生了负权环</strong>。为什么呢？</p>
+<ul>
+<li>可以才前往下一个点，<strong>说明整条链是单调递减的</strong></li>
+<li><strong>遇到递归过程中的节点说明形成了环</strong></li>
+</ul>
+<p><strong>一条单调递减的环，也就是可以无限递减的环，当然是一个负权环</strong>。<br>
+代码实现如下</p>
+<div class="highlight highlight-source-c++"><pre class="notranslate">#<span class="pl-k">include</span> <span class="pl-s"><span class="pl-pds">&lt;</span>bits/stdc++.h<span class="pl-pds">&gt;</span></span>
+<span class="pl-k">using</span> <span class="pl-k">namespace</span> <span class="pl-en">std</span><span class="pl-k">;</span>
+<span class="pl-k">const</span> <span class="pl-k">int</span> N=<span class="pl-c1">3010</span>;
+<span class="pl-k">const</span> <span class="pl-k">double</span> eps=<span class="pl-c1">1e-10</span>;
+<span class="pl-k">struct</span> <span class="pl-en">edge</span>{<span class="pl-k">int</span> v;<span class="pl-k">double</span> w;};
+<span class="pl-k">int</span> n,m;
+<span class="pl-k">bool</span> used[N];<span class="pl-c"><span class="pl-c">//</span>记录当前点是否在递归过程中</span>
+<span class="pl-k">double</span> d[N];
+vector&lt;edge&gt; e[N];
+<span class="pl-k">bool</span> <span class="pl-en">dfs</span>(<span class="pl-k">int</span> u,<span class="pl-k">double</span> x)
+{
+    used[u]=<span class="pl-c1">true</span>;<span class="pl-c"><span class="pl-c">//</span>点u进入递归</span>
+    <span class="pl-k">for</span>(<span class="pl-k">auto</span> it=e[u].<span class="pl-c1">begin</span>();it!=e[u].<span class="pl-c1">end</span>();++it)
+    {
+        <span class="pl-k">int</span> v=it-&gt;<span class="pl-smi">v</span>;
+        <span class="pl-k">double</span> w=it-&gt;<span class="pl-smi">w</span>-x;
+        <span class="pl-k">if</span>(d[v]-(d[u]+w)&gt;-eps)<span class="pl-c"><span class="pl-c">//</span>如果下一个点能被当前点松弛</span>
+        {
+            d[v]=d[u]+w;
+            <span class="pl-k">if</span>(used[v])<span class="pl-k">return</span> <span class="pl-c1">true</span>;<span class="pl-c"><span class="pl-c">//</span>如果v在递归过程中说明负权环存在</span>
+            <span class="pl-k">if</span>(<span class="pl-c1">dfs</span>(v,x))<span class="pl-k">return</span> <span class="pl-c1">true</span>;<span class="pl-c"><span class="pl-c">//</span>对v递归调用</span>
+        }
+    }
+    used[u]=<span class="pl-c1">false</span>;<span class="pl-c"><span class="pl-c">//</span>u点递归结束</span>
+    <span class="pl-k">return</span> <span class="pl-c1">false</span>;<span class="pl-c"><span class="pl-c">//</span>从u点出发不存在负权环</span>
+}
+<span class="pl-k">bool</span> <span class="pl-en">check</span>(<span class="pl-k">double</span> x)
+{
+    <span class="pl-c1">memset</span>(d,<span class="pl-c1">0</span>,<span class="pl-k">sizeof</span>(d));<span class="pl-c"><span class="pl-c">//</span>还是使用虚拟起点的方法，初始化为0。但其实这里初始化为多少都可以。</span>
+    <span class="pl-c1">memset</span>(used,<span class="pl-c1">false</span>,<span class="pl-k">sizeof</span>(used));
+    <span class="pl-k">for</span>(<span class="pl-k">int</span> i=<span class="pl-c1">1</span>;i&lt;=n;i++)<span class="pl-c"><span class="pl-c">//</span>以每个点为起点寻找负权环</span>
+    {
+        <span class="pl-k">if</span>(<span class="pl-c1">dfs</span>(i,x))<span class="pl-k">return</span> <span class="pl-c1">true</span>;
+    }
+    <span class="pl-k">return</span> <span class="pl-c1">false</span>;
+}
+<span class="pl-k">int</span> <span class="pl-en">main</span>()
+{
+    cin&gt;&gt;n&gt;&gt;m;
+    <span class="pl-k">for</span>(<span class="pl-k">int</span> i=<span class="pl-c1">1</span>;i&lt;=m;i++)
+    {
+        <span class="pl-k">int</span> a,b;
+        <span class="pl-k">double</span> c;
+        cin&gt;&gt;a&gt;&gt;b&gt;&gt;c;
+        e[a].<span class="pl-c1">push_back</span>({b,c});
+    }
+    <span class="pl-k">double</span> l=-<span class="pl-c1">1e7</span>-<span class="pl-c1">5</span>,r=<span class="pl-c1">1e7</span>+<span class="pl-c1">5</span>;
+    <span class="pl-k">while</span>(r-l&gt;eps)
+    {
+        <span class="pl-k">double</span> mid=l+(r-l)/<span class="pl-c1">2</span>;
+        <span class="pl-k">if</span>(<span class="pl-c1">check</span>(mid))r=mid;
+        <span class="pl-k">else</span> l=mid;
+    }
+    cout&lt;&lt;fixed&lt;&lt;<span class="pl-c1">setprecision</span>(<span class="pl-c1">8</span>)&lt;&lt;r;
+    <span class="pl-k">return</span> <span class="pl-c1">0</span>;
+}</pre></div></div>
 <div style="font-size:small;margin-top:8px;float:right;"></div>
 
 <button class="btn btn-block" type="button" onclick="openComments()" id="cmButton">评论</button>
