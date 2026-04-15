@@ -266,10 +266,10 @@ vector&lt;edge&gt; e[N];
 <h2>方法二：深度优先搜索</h2>
 <p>这是用于判断负权环更常见的算法。我们从一个点出发，然后一条路走到黑。<strong>如果下一个点能被当前点松弛，就前往下一个点，如果这个点还在递归过程中，就说明产生了负权环</strong>。为什么呢？</p>
 <ul>
-<li>可以才前往下一个点，<strong>说明整条链是单调递减的</strong></li>
+<li>可以松弛才前往下一个点，说明<strong>沿着该路径权值和是减小也就是单调递减的</strong></li>
 <li><strong>遇到递归过程中的节点说明形成了环</strong></li>
 </ul>
-<p><strong>一条单调递减的环，也就是可以无限递减的环，当然是一个负权环</strong>。<br>
+<p><strong>一条权值和单调递减的环，也就是可以无限递减的环，当然是一个负权环</strong>。<br>
 代码实现如下</p>
 <div class="highlight highlight-source-c++"><pre class="notranslate">#<span class="pl-k">include</span> <span class="pl-s"><span class="pl-pds">&lt;</span>bits/stdc++.h<span class="pl-pds">&gt;</span></span>
 <span class="pl-k">using</span> <span class="pl-k">namespace</span> <span class="pl-en">std</span><span class="pl-k">;</span>
