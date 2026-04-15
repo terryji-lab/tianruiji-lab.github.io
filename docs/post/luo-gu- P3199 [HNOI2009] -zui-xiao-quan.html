@@ -192,7 +192,72 @@ vector&lt;edge&gt; e[N];
     <span class="pl-k">return</span> <span class="pl-c1">0</span>;
 }</pre></div>
 <p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/847d1ad6-980b-4fd5-b14a-0e2f646ac4dc"><img width="1344" height="449" alt="Image" src="https://github.com/user-attachments/assets/847d1ad6-980b-4fd5-b14a-0e2f646ac4dc" style="max-width: 100%; height: auto; max-height: 449px;"></a></p>
-<p>最后我们发现会TLE，因为使用bfs形式的SPFA算法一个一个枚举出发点进行判断实在是太慢了。那么接下来我就会介绍dfs版本的SPFA算法，在寻找负权环的速度上会块很多。</p></div>
+<p>最后我们发现会TLE，因为使用bfs形式的SPFA算法一个一个枚举出发点进行判断实在是太慢了。那么接下来我就会介绍两种优化方式。</p>
+<h2>方式一：所有节点一次性入队</h2>
+<p>想象一下，我们创建一个<strong>虚拟节点，这个节点与所有的节点都相连，并且路径权重都为0</strong>。我们直接对这个虚拟节点进行松弛操作，就不需要去遍历寻找那一个可以通往所有顶点的出发点了。但是代价就是我们也<strong>无法算出最短路</strong>，因为虚拟节点是不存在的，最后就算没有负权环，<code class="notranslate">dist[]</code>数组中的值也是没有意义的。这种方法适用于图中<strong>需要进行负权环的判断而不需要最短路长度的情况</strong>。<br>
+代码如下</p>
+<div class="highlight highlight-source-c++"><pre class="notranslate">#<span class="pl-k">include</span> <span class="pl-s"><span class="pl-pds">&lt;</span>bits/stdc++.h<span class="pl-pds">&gt;</span></span>
+<span class="pl-k">using</span> <span class="pl-k">namespace</span> <span class="pl-en">std</span><span class="pl-k">;</span>
+<span class="pl-k">const</span> <span class="pl-k">int</span> N=<span class="pl-c1">3010</span>;
+<span class="pl-k">const</span> <span class="pl-k">double</span> eps=<span class="pl-c1">1e-13</span>;
+<span class="pl-k">int</span> n,m;
+<span class="pl-k">struct</span> <span class="pl-en">edge</span>{<span class="pl-k">int</span> v;<span class="pl-k">double</span> w;};
+vector&lt;edge&gt; e[N];
+<span class="pl-k">double</span> d[N];
+<span class="pl-k">int</span> cnt[N];
+<span class="pl-k">bool</span> in_que[N];
+<span class="pl-k">bool</span> <span class="pl-en">SPFA</span>(<span class="pl-k">double</span> x)
+{
+    <span class="pl-c1">fill</span>(cnt,cnt+N,<span class="pl-c1">0</span>);<span class="pl-c"><span class="pl-c">//</span>全部初始化为0而不是1，cnt记录的是从真实节点出发经过的边数，虚拟节点不会对cnt产生影响</span>
+    <span class="pl-c1">fill</span>(in_que,in_que+N,<span class="pl-c1">false</span>);
+    <span class="pl-c1">fill</span>(d,d+N,<span class="pl-c1">0</span>);<span class="pl-c"><span class="pl-c">//</span>距离全部初始化为0</span>
+    queue&lt;<span class="pl-k">int</span>&gt; q;
+    <span class="pl-k">for</span>(<span class="pl-k">int</span> i=<span class="pl-c1">1</span>;i&lt;=n;i++)<span class="pl-c"><span class="pl-c">//</span>全部入队</span>
+    {
+        q.<span class="pl-c1">push</span>(i);
+        in_que[i]=<span class="pl-c1">true</span>;
+    }
+    <span class="pl-k">while</span>(!q.<span class="pl-c1">empty</span>())
+    {
+        <span class="pl-k">int</span> cur=q.<span class="pl-c1">front</span>();
+        q.<span class="pl-c1">pop</span>();in_que[cur]=<span class="pl-c1">false</span>;
+        <span class="pl-k">for</span>(<span class="pl-k">auto</span> it=e[cur].<span class="pl-c1">begin</span>();it!=e[cur].<span class="pl-c1">end</span>();++it)
+        {
+            <span class="pl-k">int</span> v=it-&gt;<span class="pl-smi">v</span>;
+            <span class="pl-k">double</span> w=it-&gt;<span class="pl-smi">w</span>-x;
+            <span class="pl-k">if</span>(d[v]-(d[cur]+w)&gt;-eps)
+            {
+                d[v]=d[cur]+w;
+                cnt[v]=cnt[cur]+<span class="pl-c1">1</span>;<span class="pl-c"><span class="pl-c">//</span>v和u都是真实节点，相当于就是全部节点入队后虚拟节点就不存在了</span>
+                <span class="pl-k">if</span>(cnt[v]&gt;=n)<span class="pl-k">return</span> <span class="pl-c1">true</span>;<span class="pl-c"><span class="pl-c">//</span>所以这里判断的还是最多有n-1条边，否则就存在负权环</span>
+                <span class="pl-k">if</span>(!in_que[v])q.<span class="pl-c1">push</span>(v),in_que[v]=<span class="pl-c1">true</span>;
+            }
+        }
+    }
+    <span class="pl-k">return</span> <span class="pl-c1">false</span>;
+}
+<span class="pl-k">int</span> <span class="pl-en">main</span>()
+{
+    cin&gt;&gt;n&gt;&gt;m;
+    <span class="pl-k">for</span>(<span class="pl-k">int</span> i=<span class="pl-c1">1</span>;i&lt;=m;i++)
+    {
+        <span class="pl-k">int</span> a,b;
+        <span class="pl-k">double</span> c;
+        cin&gt;&gt;a&gt;&gt;b&gt;&gt;c;
+        e[a].<span class="pl-c1">push_back</span>({b,c});
+    }
+    <span class="pl-k">double</span> l=-<span class="pl-c1">1e7</span>-<span class="pl-c1">5</span>,r=<span class="pl-c1">1e7</span>+<span class="pl-c1">5</span>;
+    <span class="pl-k">while</span>(r-l&gt;eps)
+    {
+        <span class="pl-k">double</span> mid=l+(r-l)/<span class="pl-c1">2</span>;
+        <span class="pl-k">if</span>(<span class="pl-c1">SPFA</span>(mid))r=mid;
+        <span class="pl-k">else</span> l=mid;
+    }
+    cout&lt;&lt;fixed&lt;&lt;<span class="pl-c1">setprecision</span>(<span class="pl-c1">8</span>)&lt;&lt;r;
+    <span class="pl-k">return</span> <span class="pl-c1">0</span>;
+}</pre></div>
+<p>但是.....</p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/6bd42968-b090-47e2-9911-fa88cee1c797"><img width="1313" height="463" alt="Image" src="https://github.com/user-attachments/assets/6bd42968-b090-47e2-9911-fa88cee1c797" style="max-width: 100%; height: auto; max-height: 463px;"></a></p></div>
 <div style="font-size:small;margin-top:8px;float:right;"></div>
 
 <button class="btn btn-block" type="button" onclick="openComments()" id="cmButton">评论</button>
