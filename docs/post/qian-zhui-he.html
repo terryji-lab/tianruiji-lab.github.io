@@ -10,15 +10,11 @@
         let theme = localStorage.getItem("meek_theme") || "light";
         document.documentElement.setAttribute("data-color-mode", theme);
     </script>
-<meta name="description" content="# 前缀和与差分
-
-## 前缀和
+<meta name="description" content="# 前缀和
 
 前缀和一种预处理技术，把从1到i的元素之和存在``pre[i]``当中，能够在 **O(1)** 时间内求出任意一个**连续子数组**的元素之和。">
 <meta property="og:title" content="前缀和">
-<meta property="og:description" content="# 前缀和与差分
-
-## 前缀和
+<meta property="og:description" content="# 前缀和
 
 前缀和一种预处理技术，把从1到i的元素之和存在``pre[i]``当中，能够在 **O(1)** 时间内求出任意一个**连续子数组**的元素之和。">
 <meta property="og:type" content="article">
@@ -91,15 +87,14 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 </div>
 </div>
     <div id="content">
-<div class="markdown-body" id="postBody"><h1>前缀和与差分</h1>
-<h2>前缀和</h2>
+<div class="markdown-body" id="postBody"><h1>前缀和</h1>
 <p>前缀和一种预处理技术，把从1到i的元素之和存在<code class="notranslate">pre[i]</code>当中，能够在 <strong>O(1)</strong> 时间内求出任意一个<strong>连续子数组</strong>的元素之和。</p>
 <p>对于一个长度为 $n$ 的数组 $a$，定义其<strong>前缀和数组</strong> $pre$ 为：</p>
 <p>$$
 pre[i] = \sum_{j=1}^{i} a[j] = a[1] + a[2] + \cdots + a[i]
 $$</p>
 <p>特殊地，我们通常令 $pre[0] = 0$。并且一般使用<code class="notranslate">1~based</code>下标。</p>
-<h3>一维前缀和公式</h3>
+<h2>一维前缀和公式</h2>
 <ul>
 <li>求前缀和</li>
 </ul>
@@ -108,7 +103,7 @@ $$</p>
 <li>查询区间和<code class="notranslate">[L,R]</code></li>
 </ul>
 <div class="highlight highlight-source-c++"><pre class="notranslate">sum=<span class="pl-k">pre</span>[R]-<span class="pl-k">pre</span>[L-<span class="pl-c1">1</span>];</pre></div>
-<h3>二维前缀和</h3>
+<h2>二维前缀和</h2>
 <p>若要求出一个二维数组的<strong>子数组</strong>元素之和，可以使用二维前缀和</p>
 <ul>
 <li>以<code class="notranslate">i</code> <code class="notranslate">j</code>为右下角元素的子数组元素和,使用容斥原理（也可以先对每一行做一次前缀和，再对每一列做一次前缀和）</li>
