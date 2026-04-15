@@ -295,7 +295,7 @@ vector&lt;edge&gt; e[N];
         }
     }
     used[u]=<span class="pl-c1">false</span>;<span class="pl-c"><span class="pl-c">//</span>u点递归结束</span>
-    <span class="pl-k">return</span> <span class="pl-c1">false</span>;<span class="pl-c"><span class="pl-c">//</span>从u点出发不存在负权环</span>
+    <span class="pl-k">return</span> <span class="pl-c1">false</span>;<span class="pl-c"><span class="pl-c">//</span>只是从u出发找不到负权环，而不是u不在负权环内，可以自己画图模拟领会一下</span>
 }
 <span class="pl-k">bool</span> <span class="pl-en">check</span>(<span class="pl-k">double</span> x)
 {
