@@ -257,7 +257,9 @@ vector&lt;edge&gt; e[N];
     <span class="pl-k">return</span> <span class="pl-c1">0</span>;
 }</pre></div>
 <p>但是.....</p>
-<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/6bd42968-b090-47e2-9911-fa88cee1c797"><img width="1313" height="463" alt="Image" src="https://github.com/user-attachments/assets/6bd42968-b090-47e2-9911-fa88cee1c797" style="max-width: 100%; height: auto; max-height: 463px;"></a></p></div>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/6bd42968-b090-47e2-9911-fa88cee1c797"><img width="1313" height="463" alt="Image" src="https://github.com/user-attachments/assets/6bd42968-b090-47e2-9911-fa88cee1c797" style="max-width: 100%; height: auto; max-height: 463px;"></a></p>
+<p>说明其实使用广搜是过不了这个题的。优化前还有可能提前遇到连通出发点通过一些样例，优化后反而过不了了，纯纯负优化。所以我么考虑使用<strong>深度优先搜索</strong>。</p>
+<h2>方式二：深度优先搜索</h2></div>
 <div style="font-size:small;margin-top:8px;float:right;"></div>
 
 <button class="btn btn-block" type="button" onclick="openComments()" id="cmButton">评论</button>
