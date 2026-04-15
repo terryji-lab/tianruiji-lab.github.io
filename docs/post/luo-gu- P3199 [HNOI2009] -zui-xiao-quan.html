@@ -143,7 +143,7 @@ vector&lt;edge&gt; e[N];
 <span class="pl-k">double</span> d[N];
 <span class="pl-k">bool</span> <span class="pl-en">SPFA</span>(<span class="pl-k">double</span> x)
 {
-    <span class="pl-k">for</span>(<span class="pl-k">int</span> s=<span class="pl-c1">1</span>;s&lt;=n;s++)<span class="pl-c"><span class="pl-c">//</span>图可能不连通，所以需要枚举每一个出发点来寻找负权环或者0权环</span>
+    <span class="pl-k">for</span>(<span class="pl-k">int</span> s=<span class="pl-c1">1</span>;s&lt;=n;s++)<span class="pl-c"><span class="pl-c">//</span>有向图，图连通并不代表可以从任意一个节点访问其余所有节点，所以需要进行遍历找到可以通往所有其他节点的出发点</span>
     {
         <span class="pl-c1">memset</span>(cnt,<span class="pl-c1">0</span>,<span class="pl-k">sizeof</span>(cnt));
         <span class="pl-c1">memset</span>(in_que,<span class="pl-c1">false</span>,<span class="pl-k">sizeof</span>(in_que));
