@@ -130,7 +130,7 @@ unordered_map&lt;<span class="pl-k">int</span>,<span class="pl-k">int</span>&gt;
     <span class="pl-k">for</span>(<span class="pl-k">int</span> i=<span class="pl-c1">0</span>;i&lt;=n;i++)
     {
         <span class="pl-k">if</span>(table.<span class="pl-c1">find</span>(<span class="pl-k">pre</span>[i])==table.<span class="pl-c1">end</span>())table[<span class="pl-k">pre</span>[i]]=i;<span class="pl-c"><span class="pl-c">//</span>如果是第一次出现就记录位置</span>
-        <span class="pl-k">else</span> ans=<span class="pl-c1">max</span>(ans,i-table[<span class="pl-k">pre</span>[i]]);<span class="pl-c"><span class="pl-c">//</span>否则就更新最大长度，注意如果把i看作r的话，table[pre[i]]应该是l-1。元素个数是r-l+1`也就是i-table[pre[i]]</span>
+        <span class="pl-k">else</span> ans=<span class="pl-c1">max</span>(ans,i-table[<span class="pl-k">pre</span>[i]]);<span class="pl-c"><span class="pl-c">//</span>否则就更新最大长度，注意如果把i看作r的话，table[pre[i]]应该是l-1。元素个数是r-l+1也就是i-table[pre[i]]</span>
     }
     cout&lt;&lt;ans;
     <span class="pl-k">return</span> <span class="pl-c1">0</span>;
