@@ -131,7 +131,7 @@ $$</p>
 <h2>感叹</h2>
 <p>一定要注意精度，刚开始把eps开成1e-13，疯狂TLE，卡了半天没找到问题，最后改成1e-10就过了。</p>
 <h2>分析</h2>
-<p>我们要求圈内权重之和和边数之和的比值的最小值，很明显是一个<strong>分数规划最小化问题</strong>，使用<strong>二分法搜索合法分数值<code class="notranslate">x</code></strong>。这里我们可以把每条边的<strong>权重看作<code class="notranslate">w-x*c</code></strong>，这样只需要最后的<strong>路径权重和小于等于0即可，转化为最小路径问题</strong>，并且这个最小路径又小于等于0，说明我们其实要做的就是<strong>判断这个环是不是一个负权环或者0权环</strong>。因为不是负权环或者0权环的话，环的权重和是不可能小于等于0的。判断是否有负权环的方法，自然想到使用<strong>SPFA算法</strong>。<br>
+<p>我们要求圈内权重之和和边数之和的比值的最小值，很明显是一个<strong>分数规划最小化问题</strong>，使用<strong>二分法搜索合法分数值<code class="notranslate">x</code></strong>。这里我们可以把每条边的<strong>权重看作<code class="notranslate">w-x*c</code></strong>，这样只需要最后的<strong>路径权重和小于等于0即可，转化为最小路径问题</strong>。我们其实要做的就是<strong>判断这个环是不是一个负权环或者0权环</strong>。判断是否有负权环的方法，自然想到使用<strong>SPFA算法</strong>。<br>
 代码如下</p>
 <div class="highlight highlight-source-c++"><pre class="notranslate">#<span class="pl-k">include</span> <span class="pl-s"><span class="pl-pds">&lt;</span>bits/stdc++.h<span class="pl-pds">&gt;</span></span>
 <span class="pl-k">using</span> <span class="pl-k">namespace</span> <span class="pl-en">std</span><span class="pl-k">;</span>
