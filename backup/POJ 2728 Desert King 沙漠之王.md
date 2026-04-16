@@ -67,7 +67,7 @@ void get_w(double v)//计算每两个点的边权，存入w数组
 		}
 	}
 }
-bool prim_check(double v)//最想生成树prim算法
+bool prim_check(double v)//最小生成树prim算法
 {
 	get_w(v);
 	memset(used,false,sizeof(used));
