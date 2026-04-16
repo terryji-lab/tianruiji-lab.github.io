@@ -110,7 +110,7 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 <p>因此，转移方程为：<code class="notranslate">st[i][j]=max(s[i][j-1],s[i+2^(j-1)][j-1])</code></p>
 <p>这个过程可以通过双重循环实现：外层枚举区间长度指数 ( j )，内层枚举起点 ( i )。</p>
 <h3>查询操作</h3>
-<p>当我们需要查询区间 ([L, R]) 的最值时，我们找到最大的整数 ( k )，使得 ( 2^k \le R - L + 1 )（即区间长度）。</p>
+<p>当我们需要查询区间 ([L, R]) 的最值时，我们找到最大的整数 ( k )，使得两段长为<code class="notranslate">2^k</code>的子区间能完整覆盖整个所求区间。</p>
 <p>通常直接取：<code class="notranslate">k=log2(R-L+1)</code>这里只取k的整数部分。</p>
 <p>那么，区间 ([L, R]) 可以被<strong>两个有重叠的、长度均为 ( 2^k ) 的区间完全覆盖</strong>：</p>
 <ul>
