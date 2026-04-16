@@ -110,7 +110,7 @@ vector&lt;<span class="pl-k">int</span>&gt; e[N];<span class="pl-c"><span class=
     st[u][<span class="pl-c1">0</span>]=father;<span class="pl-c"><span class="pl-c">//</span>u向上搜索1个节点就是父节点</span>
     <span class="pl-k">for</span>(<span class="pl-k">int</span> i=<span class="pl-c1">1</span>;i&lt;=<span class="pl-c1">19</span>;i++)
     {
-        st[u][i]=st[st[u][i-<span class="pl-c1">1</span>]][i-<span class="pl-c1">1</span>];<span class="pl-c"><span class="pl-c">//</span>搜索u的所有祖先</span>
+        st[u][i]=st[st[u][i-<span class="pl-c1">1</span>]][i-<span class="pl-c1">1</span>];<span class="pl-c"><span class="pl-c">//</span>向上倍增搜索祖先</span>
     }
     <span class="pl-k">for</span>(<span class="pl-k">auto</span> it=e[u].<span class="pl-c1">begin</span>();it!=e[u].<span class="pl-c1">end</span>();++it)
     {

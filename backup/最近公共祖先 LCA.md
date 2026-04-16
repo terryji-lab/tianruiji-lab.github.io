@@ -23,7 +23,7 @@ void dfs(int u,int father)
     st[u][0]=father;//u向上搜索1个节点就是父节点
     for(int i=1;i<=19;i++)
     {
-        st[u][i]=st[st[u][i-1]][i-1];//搜索u的所有祖先
+        st[u][i]=st[st[u][i-1]][i-1];//向上倍增搜索祖先
     }
     for(auto it=e[u].begin();it!=e[u].end();++it)
     {
