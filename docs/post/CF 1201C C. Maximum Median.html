@@ -145,7 +145,7 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 <li>在第三个例子中，你可以进行四次操作：分别增加第一个、第四个、第六个和第七个元素。数组变为 $[5,1,2,5,3,5,5]$，其中位数为 $5$。</li>
 </ul>
 <h2>分析</h2>
-<p>最大化问题，二分最大中位数然后进行检验。因为元素个数<code class="notranslate">n</code>是奇数，所以排序后中位数的下标是<code class="notranslate">(1+n)/2</code>。求最大中位数，应该去增大现有的中位数，<strong>增大后中位数之前的元素单调性没有受到影响，依旧全部小于中位数不下降排列</strong>。所以只用<strong>检查中位数和中位数后面的数需要操作多少次才能重新恢复单调</strong>。<br>
+<p>最大化问题，二分最大中位数然后进行检验。因为元素个数<code class="notranslate">n</code>是奇数，所以排序后中位数的下标是<code class="notranslate">(1+n)/2</code>。求最大中位数，应该去增大现有的中位数，<strong>增大后中位数之前的元素单调性没有受到影响，依旧是全部小于中位数不下降排列</strong>。所以只用<strong>检查中位数和中位数后面的数需要操作多少次才能重新恢复单调</strong>。<br>
 代码如下</p>
 <div class="highlight highlight-source-c++"><pre class="notranslate">#<span class="pl-k">include</span> <span class="pl-s"><span class="pl-pds">&lt;</span>bits/stdc++.h<span class="pl-pds">&gt;</span></span>
 <span class="pl-k">using</span> <span class="pl-k">namespace</span> <span class="pl-en">std</span><span class="pl-k">;</span>
