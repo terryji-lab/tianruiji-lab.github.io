@@ -91,7 +91,7 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 </ul>
 <p>所有修改完成后对差分数组求前缀和就可以查询修改后的数组。</p>
 <h2>二维差分</h2>
-<p>用于处理子矩阵值修改的问题。差分矩阵的求解有一点抽象，所以这里我推荐使用<strong>先横向求一次差分，再纵向求一次差分</strong>的方法来求差分矩阵。前缀和矩阵也可以先横向一次前缀和再纵向一次前缀和的方式来求，但我觉得没必要。</p>
+<p>用于处理子矩阵值修改的问题，将区间操作转化为两点操作。差分矩阵的求解有一点抽象，所以这里我推荐使用<strong>先横向求一次差分，再纵向求一次差分</strong>的方法来求差分矩阵。前缀和矩阵也可以先横向一次前缀和再纵向一次前缀和的方式来求，但我觉得没必要。</p>
 <h3>修改操作</h3>
 <p>如果我们对<code class="notranslate">diff[i][j]</code>进行操作，那么<strong>整个以<code class="notranslate">(i,j)</code>为左上角的矩阵都会受到影响</strong>。所以，如果我们想要在<code class="notranslate">(x1,y1)</code>和<code class="notranslate">(x2,y2)</code>这个子矩阵上加上常数<code class="notranslate">c</code>，我们的操作是：</p>
 <ul>
