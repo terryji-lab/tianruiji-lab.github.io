@@ -204,7 +204,56 @@ vector&lt;edge&gt; e[N];<span class="pl-c"><span class="pl-c">//</span>建立邻
 <li>查询任意两点间的边效率低，速度低于邻接矩阵</li>
 <li>极端情况下速度略慢于链式向前星</li>
 </ul>
-<p>其实邻接表在大部分图的问题中已经完全够用了，覆盖了大部分问题，除了特殊的算法需要邻接矩阵，或者真的极端卡常需要链式向前星，不然无脑选择邻接表就可以了。</p></div>
+<p>其实邻接表在大部分图的问题中已经完全够用了，覆盖了大部分问题，除了特殊的算法需要邻接矩阵，或者真的极端卡常需要链式向前星，不然无脑选择邻接表就可以了。</p>
+<h2>链式向前星</h2>
+<p>用三个静态数组来模拟链表，本质上就是<strong>静态的邻接表</strong>。相比使用vector实现的邻接表实现更复杂，但是相对也会快一些。<code class="notranslate">to[i]</code>表示第<code class="notranslate">i</code>条边连接的节点编号，<code class="notranslate">head[i]</code>表示头节点<code class="notranslate">i</code>连接的第一条边的编号，<code class="notranslate">weight[i]</code>表示第<code class="notranslate">i</code>条边的权重，<code class="notranslate">nxt[i]</code>表示第<code class="notranslate">i</code>条边连接的下一条边的编号（如果编号为0说明<code class="notranslate">i</code>后面没有多余的边）。<code class="notranslate">idx</code>表示目前正在处理的边的编号。</p>
+<h3>代码实现</h3>
+<div class="highlight highlight-source-c++"><pre class="notranslate">#<span class="pl-k">include</span> <span class="pl-s"><span class="pl-pds">&lt;</span>bits/stdc++.h<span class="pl-pds">&gt;</span></span>
+<span class="pl-k">using</span> <span class="pl-k">namespace</span> <span class="pl-en">std</span><span class="pl-k">;</span>
+<span class="pl-k">const</span> <span class="pl-k">int</span> N=<span class="pl-c1">50</span>;
+constint M=<span class="pl-c1">200</span>;<span class="pl-c"><span class="pl-c">//</span>边的数量一定要比点的数量多</span>
+<span class="pl-k">int</span> to[M];<span class="pl-c"><span class="pl-c">//</span>存边的终点</span>
+<span class="pl-k">int</span> head[N];<span class="pl-c"><span class="pl-c">//</span>每个节点的头边</span>
+<span class="pl-k">int</span> weight[M];<span class="pl-c"><span class="pl-c">//</span>存边权重</span>
+<span class="pl-k">int</span> nxt[M];<span class="pl-c"><span class="pl-c">//</span>存下一条边</span>
+<span class="pl-k">int</span> idx;<span class="pl-c"><span class="pl-c">//</span>边的编号</span>
+<span class="pl-k">bool</span> used[N];<span class="pl-c"><span class="pl-c">//</span>访问标记</span>
+<span class="pl-k">void</span> <span class="pl-en">add</span>(<span class="pl-k">int</span> u,<span class="pl-k">int</span> v,<span class="pl-k">int</span> w)
+{
+    to[idx]=v;<span class="pl-c"><span class="pl-c">//</span>边idx连接的节点</span>
+    weight[idx]=w;<span class="pl-c"><span class="pl-c">//</span>边idx的边权</span>
+    nxt[idx]=head[u];
+    head[u]=idx++;<span class="pl-c"><span class="pl-c">//</span>类似于链表的前插操作，同时更新边的编号</span>
+}
+<span class="pl-k">int</span> n,m;
+<span class="pl-k">void</span> <span class="pl-en">dfs</span>(<span class="pl-k">int</span> u)
+{
+    used[u]=<span class="pl-c1">true</span>;
+    <span class="pl-k">for</span>(<span class="pl-k">int</span> i=head[u];i;i=nxt[i])<span class="pl-c"><span class="pl-c">//</span>如果i等于0说明已经没有边了，循环结束，否则i变成下一条边</span>
+    {
+        <span class="pl-k">int</span> v=to[i];<span class="pl-c"><span class="pl-c">//</span>i连接的点</span>
+        <span class="pl-k">int</span> w=weight[i];<span class="pl-c"><span class="pl-c">//</span>i的边权</span>
+        <span class="pl-k">if</span>(!used[v])
+        {
+            cout&lt;&lt;u&lt;&lt;<span class="pl-s"><span class="pl-pds">"</span>-&gt;<span class="pl-pds">"</span></span>&lt;&lt;v&lt;&lt;<span class="pl-s"><span class="pl-pds">'</span> <span class="pl-pds">'</span></span>&lt;&lt;w&lt;&lt;<span class="pl-s"><span class="pl-pds">'</span><span class="pl-cce">\n</span><span class="pl-pds">'</span></span>;
+            <span class="pl-c1">dfs</span>(v);
+        }
+    }
+}
+<span class="pl-k">int</span> <span class="pl-en">main</span>()
+{
+    cin&gt;&gt;n&gt;&gt;m;
+    idx=<span class="pl-c1">1</span>;<span class="pl-c"><span class="pl-c">//</span>初始化编号</span>
+    <span class="pl-k">for</span>(<span class="pl-k">int</span> i=<span class="pl-c1">1</span>;i&lt;=m;i++)
+    {
+        <span class="pl-k">int</span> u,v,w;
+        cin&gt;&gt;u&gt;&gt;v&gt;&gt;w;
+        <span class="pl-c1">add</span>(u,v,w);
+        <span class="pl-c"><span class="pl-c">//</span>add(v,u,w);如果是无向图加上这一条，树是无向图</span>
+    }
+    <span class="pl-k">for</span>(<span class="pl-k">int</span> i=<span class="pl-c1">1</span>;i&lt;=n;i++)<span class="pl-c1">dfs</span>(i);
+    <span class="pl-k">return</span> <span class="pl-c1">0</span>;
+}</pre></div></div>
 <div style="font-size:small;margin-top:8px;float:right;"></div>
 
 <button class="btn btn-block" type="button" onclick="openComments()" id="cmButton">评论</button>
