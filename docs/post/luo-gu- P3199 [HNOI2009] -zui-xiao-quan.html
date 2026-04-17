@@ -193,7 +193,7 @@ vector&lt;edge&gt; e[N];
     cout&lt;&lt;fixed&lt;&lt;<span class="pl-c1">setprecision</span>(<span class="pl-c1">8</span>)&lt;&lt;r;
     <span class="pl-k">return</span> <span class="pl-c1">0</span>;
 }</pre></div>
-<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/847d1ad6-980b-4fd5-b14a-0e2f646ac4dc"><img width="1344" height="449" alt="Image" src="https://github.com/user-attachments/assets/847d1ad6-980b-4fd5-b14a-0e2f646ac4dc" style="max-width: 100%; height: auto; max-height: 449px;"></a></p>
+<p><a target="_blank" rel="noopener noreferrer" href="https://github.com/user-attachments/assets/847d1ad6-980b-4fd5-b14a-0e2f646ac4dc"><img width="1344" height="449" alt="Image" src="https://github.com/user-attachments/assets/847d1ad6-980b-4fd5-b14a-0e2f646ac4dc" style="max-width: 100%; height: auto; max-height: 449px;; aspect-ratio: 1344 / 449; background-color: var(--bgColor-muted); border-radius: 6px; display: block" class="js-gh-image-fallback"></a></p>
 <p>最后我们发现会TLE，因为使用bfs形式的SPFA算法一个一个枚举出发点进行判断实在是太慢了。那么接下来我会介绍两种优化的方法都可以通过这道题。</p>
 <h2>方法一：创建虚拟起点</h2>
 <p>因为是<strong>有向图，纵使图是连通的也无法通过一个点遍历整个图</strong>，因此一般的SPFA算法就会遇到反复尝试起点导致超时的问题。对此，我们可以创建一个<strong>虚拟起点，它与所有的节点都相连，并且路径权重都为0</strong>，在一开始我们对这个虚拟点进行松弛操作，<strong>直接把所有节点都加入队列</strong>，避免一次一次的重复SPFA。<strong>当然使用这种方法也会让<code class="notranslate">d[]</code>数组失去意义就算负权环不存在</strong></p>
