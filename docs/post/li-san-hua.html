@@ -121,7 +121,9 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 <h3>数据规模与约定</h3>
 <p>对于全部的测试点，保证 $1 \leq n \leq 2 \times 10^4$， $-2^{31} \leq a &amp;lt;  b \lt 2^{31}$ ，且答案小于 $2^{31}$ 。</p>
 <h2>分析</h2>
-<p>数据值得范围非常大，<code class="notranslate">2^31</code>无法用数组表示，并且还有负值，固考虑离散化。这道题的意思就是有一条白色的线段，每次给出一个左闭右开的区间<code class="notranslate">[a,b)</code>进行染色，求最后被染色的区间长度。不难发现这道题还涉及区间修改，也需要使用<strong>差分</strong>。代码如下:</p>
+<p>数据值得范围非常大，<code class="notranslate">2^31</code>无法用数组表示，并且还有负值，固考虑离散化。这道题的意思就是有一条白色的线段，每次给出一个左闭右开的区间<code class="notranslate">[a,b)</code>进行染色，求最后被染色的区间长度。不难发现这道题还涉及区间修改，也需要使用<strong>差分</strong>。<br>
+如果有一个离散化端点被访问过，在原数组中有多长的区间被访问过呢？<strong>我们离散化后的区间端点在数轴上画出了一道一道的“分割线”，把原本连续的数轴切分成了一个个独立的没有重合的区间段。每一个离散化端点是否被访问就代表着端点后的区间段是否被访问。可以轻松的算出端点<code class="notranslate">i</code>对应的区间长度为<code class="notranslate">t[i+1]-t[i]</code></strong>。<br>
+代码如下:</p>
 <div class="highlight highlight-source-c++"><pre class="notranslate">#<span class="pl-k">include</span> <span class="pl-s"><span class="pl-pds">&lt;</span>bits/stdc++.h<span class="pl-pds">&gt;</span></span>
 <span class="pl-k">using</span> <span class="pl-k">namespace</span> <span class="pl-en">std</span><span class="pl-k">;</span>
 <span class="pl-k">typedef</span> <span class="pl-k">long</span> <span class="pl-k">long</span> ll;
@@ -129,10 +131,10 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 ll a[<span class="pl-c1">20010</span>];
 ll b[<span class="pl-c1">20010</span>];<span class="pl-c"><span class="pl-c">//</span>存放左右节点</span>
 ll d[<span class="pl-c1">40010</span>];<span class="pl-c"><span class="pl-c">//</span>差分数组，最多的情况会有40000个节点（左节点+右节点，没有重复节点）</span>
-vector&lt;ll&gt; t;<span class="pl-c"><span class="pl-c">//</span>离散化后的数组</span>
+vector&lt;ll&gt; t;<span class="pl-c"><span class="pl-c">//</span>离散化后的数组,t[i]的值是该节点在原数组中的下标</span>
 ll <span class="pl-en">get_idx</span>(ll v)
 {
-	<span class="pl-k">return</span> <span class="pl-c1">lower_bound</span>(t.<span class="pl-c1">begin</span>(),t.<span class="pl-c1">end</span>(),v)-t.<span class="pl-c1">begin</span>();<span class="pl-c"><span class="pl-c">//</span>二分查找原来的元素离散后的下标</span>
+	<span class="pl-k">return</span> <span class="pl-c1">lower_bound</span>(t.<span class="pl-c1">begin</span>(),t.<span class="pl-c1">end</span>(),v)-t.<span class="pl-c1">begin</span>();<span class="pl-c"><span class="pl-c">//</span>二分查找原来的元素在离散数组中的下标</span>
 }
 <span class="pl-k">int</span> <span class="pl-en">main</span>()
 {
@@ -148,12 +150,12 @@ ll <span class="pl-en">get_idx</span>(ll v)
 	<span class="pl-k">for</span>(<span class="pl-k">int</span> i=<span class="pl-c1">1</span>;i&lt;=n;i++)
 	{
 		d[<span class="pl-c1">get_idx</span>(a[i])]++;<span class="pl-c"><span class="pl-c">//</span>使用差分对访问次数数组进行修改</span>
-		d[<span class="pl-c1">get_idx</span>(b[i])]--;<span class="pl-c"><span class="pl-c">//</span>左闭右开，对``[a,b)``修改的差分操作</span>
+		d[<span class="pl-c1">get_idx</span>(b[i])]--;<span class="pl-c"><span class="pl-c">//</span>左闭右开，对[a,b)修改的差分操作</span>
 	}
 	<span class="pl-k">int</span> sz=t.<span class="pl-c1">size</span>();<span class="pl-c"><span class="pl-c">//</span>离散化后的元素个数</span>
 	ll ans=<span class="pl-c1">0</span>;
 	<span class="pl-k">if</span>(d[<span class="pl-c1">0</span>]&gt;<span class="pl-c1">0</span>)ans+=t[<span class="pl-c1">1</span>]-t[<span class="pl-c1">0</span>];<span class="pl-c"><span class="pl-c">//</span>如果第一个元素被访问过就加上对应的区间长度</span>
-	<span class="pl-k">for</span>(<span class="pl-k">int</span> i=<span class="pl-c1">1</span>;i&lt;sz-<span class="pl-c1">1</span>;i++)
+	<span class="pl-k">for</span>(<span class="pl-k">int</span> i=<span class="pl-c1">1</span>;i&lt;sz-<span class="pl-c1">1</span>;i++)<span class="pl-c"><span class="pl-c">//</span>最后一个节点后没有区间，所以只循环到sz-2</span>
 	{
 		d[i]+=d[i-<span class="pl-c1">1</span>];<span class="pl-c"><span class="pl-c">//</span>从差分数组求访问次数数组</span>
 		<span class="pl-k">if</span>(d[i]&gt;<span class="pl-c1">0</span>)ans+=(t[i+<span class="pl-c1">1</span>]-t[i]);<span class="pl-c"><span class="pl-c">//</span>如果被访问过就加上对应的区间长度</span>
