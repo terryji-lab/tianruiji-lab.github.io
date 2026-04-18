@@ -1,4 +1,2 @@
-**welcome to my new blog!**
-it will record my learning experience and some ideas in my  daily life,also share music
-**non-stop!**
+请你吃KFC
 ![Image](https://github.com/user-attachments/assets/2ad4946d-6008-4a9e-8c9b-33364ca4a274)
