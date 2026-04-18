@@ -25,7 +25,7 @@
 <meta property="og:url" content="https://terryji-lab.github.io/tianruiji-lab.github.io/post/luo-gu-%20P1955%20%5BNOI2015%5D%20-cheng-xu-zi-dong-fen-xi.html">
 <meta property="og:image" content="https://avatars.githubusercontent.com/u/234720569?u=3be9bef1109cc9421ddb007b48de981393a8ccdc&v=4&size=512">
 <title>洛谷 P1955 [NOI2015] 程序自动分析</title>
-
+<link href="//unpkg.com/@wooorm/starry-night@2.1.1/style/both.css" rel="stylesheet" />
 
 
 </head>
@@ -218,7 +218,74 @@ $1 \le t \le 10$ <br> $e \in {0, 1}$
 <td align="center">^</td>
 </tr>
 </tbody>
-</table></markdown-accessiblity-table></div>
+</table></markdown-accessiblity-table>
+<h2>分析</h2>
+<p>明显是一个并查集的问题,先处理所有相等的条件，两个元素相等就加入同一个集合，然后对不等条件进行判断，如果有矛盾条件输出<code class="notranslate">NO</code>，否则就是<code class="notranslate">YES</code>。但是数据的下标非常大，需要离散化操作。代码如下：</p>
+<div class="highlight highlight-source-c++"><pre class="notranslate">#<span class="pl-k">include</span> <span class="pl-s"><span class="pl-pds">&lt;</span>bits/stdc++.h<span class="pl-pds">&gt;</span></span>
+<span class="pl-k">using</span> <span class="pl-k">namespace</span> <span class="pl-en">std</span><span class="pl-k">;</span>
+<span class="pl-k">const</span> <span class="pl-k">int</span> N=<span class="pl-c1">2e5</span>+<span class="pl-c1">5</span>;
+<span class="pl-k">struct</span> <span class="pl-en">node</span>
+{
+	<span class="pl-k">int</span> u,v,e;<span class="pl-c"><span class="pl-c">//</span>两个元素u和v，还有元素间的关系e</span>
+};
+node a[N];
+<span class="pl-k">int</span> n,m;
+<span class="pl-k">int</span> fa[N];<span class="pl-c"><span class="pl-c">//</span>父亲节点数组</span>
+<span class="pl-k">int</span> <span class="pl-en">find</span>(<span class="pl-k">int</span> u)<span class="pl-c"><span class="pl-c">//</span>并查集查找操作</span>
+{
+	<span class="pl-k">if</span>(fa[u]==u)<span class="pl-k">return</span> u;
+	<span class="pl-k">return</span> fa[u]=<span class="pl-c1">find</span>(fa[u]);
+}
+<span class="pl-k">bool</span> <span class="pl-en">cmp</span>(<span class="pl-k">const</span> node&amp;n1,<span class="pl-k">const</span> node&amp;n2)<span class="pl-c"><span class="pl-c">//</span>自定义比较函数，用于数组a[]的排序</span>
+{
+	<span class="pl-k">return</span> n1.<span class="pl-smi">e</span>&gt;n2.<span class="pl-smi">e</span>;
+}
+<span class="pl-k">void</span> <span class="pl-en">unionset</span>(<span class="pl-k">int</span> u,<span class="pl-k">int</span> v)<span class="pl-c"><span class="pl-c">//</span>并查集合并操作</span>
+{
+	fa[<span class="pl-c1">find</span>(u)]=<span class="pl-c1">find</span>(v);
+}
+<span class="pl-k">int</span> <span class="pl-en">get_idx</span>(<span class="pl-k">int</span> v,vector&lt;<span class="pl-k">int</span>&gt;&amp;vec)<span class="pl-c"><span class="pl-c">//</span>求原元素的离散化下标</span>
+{
+	<span class="pl-k">return</span> <span class="pl-c1">lower_bound</span>(vec.<span class="pl-c1">begin</span>(),vec.<span class="pl-c1">end</span>(),v)-vec.<span class="pl-c1">begin</span>();
+}
+<span class="pl-k">void</span> <span class="pl-en">judge</span>(vector&lt;<span class="pl-k">int</span>&gt;&amp;vec)<span class="pl-c"><span class="pl-c">//</span>判断是否有矛盾条件</span>
+{
+	<span class="pl-k">for</span>(<span class="pl-k">int</span> i=<span class="pl-c1">1</span>;i&lt;=n;i++)
+	{
+		<span class="pl-k">if</span>(a[i].<span class="pl-smi">e</span>==<span class="pl-c1">1</span>)<span class="pl-c1">unionset</span>(<span class="pl-c1">get_idx</span>(a[i].<span class="pl-smi">u</span>,vec),<span class="pl-c1">get_idx</span>(a[i].<span class="pl-smi">v</span>,vec));<span class="pl-c"><span class="pl-c">//</span>如果相等加入同一个集合</span>
+		<span class="pl-k">else</span> <span class="pl-k">if</span>(<span class="pl-c1">find</span>(<span class="pl-c1">get_idx</span>(a[i].<span class="pl-smi">u</span>,vec))==<span class="pl-c1">find</span>(<span class="pl-c1">get_idx</span>(a[i].<span class="pl-smi">v</span>,vec)))<span class="pl-c"><span class="pl-c">//</span>如果不等但在同一个集合中，说明条件矛盾</span>
+		{
+			cout&lt;&lt;<span class="pl-s"><span class="pl-pds">"</span>NO<span class="pl-pds">"</span></span>&lt;&lt;<span class="pl-s"><span class="pl-pds">'</span><span class="pl-cce">\n</span><span class="pl-pds">'</span></span>;
+			<span class="pl-k">return</span>;
+		}
+	}
+	cout&lt;&lt;<span class="pl-s"><span class="pl-pds">"</span>YES<span class="pl-pds">"</span></span>&lt;&lt;<span class="pl-s"><span class="pl-pds">'</span><span class="pl-cce">\n</span><span class="pl-pds">'</span></span>;
+}
+<span class="pl-k">int</span> <span class="pl-en">main</span>()
+{
+	cin&gt;&gt;m;
+	<span class="pl-k">while</span>(m--)
+	{
+		cin&gt;&gt;n;
+		vector&lt;<span class="pl-k">int</span>&gt; t;<span class="pl-c"><span class="pl-c">//</span>离散化数组</span>
+		<span class="pl-k">for</span>(<span class="pl-k">int</span> i=<span class="pl-c1">1</span>;i&lt;=n;i++)
+		{
+			cin&gt;&gt;a[i].<span class="pl-smi">u</span>&gt;&gt;a[i].<span class="pl-smi">v</span>&gt;&gt;a[i].<span class="pl-smi">e</span>;
+			t.<span class="pl-c1">push_back</span>(a[i].<span class="pl-smi">u</span>);
+			t.<span class="pl-c1">push_back</span>(a[i].<span class="pl-smi">v</span>);
+		}
+		<span class="pl-c1">sort</span>(&amp;a[<span class="pl-c1">1</span>],&amp;a[<span class="pl-c1">1</span>]+n,cmp);<span class="pl-c"><span class="pl-c">//</span>排序，将所有e为1的条件排到前面去</span>
+		<span class="pl-c1">sort</span>(t.<span class="pl-c1">begin</span>(),t.<span class="pl-c1">end</span>());
+		t.<span class="pl-c1">erase</span>(<span class="pl-c1">unique</span>(t.<span class="pl-c1">begin</span>(),t.<span class="pl-c1">end</span>()),t.<span class="pl-c1">end</span>());<span class="pl-c"><span class="pl-c">//</span>离散化操作</span>
+		<span class="pl-k">int</span> sz=t.<span class="pl-c1">size</span>();
+		<span class="pl-k">for</span>(<span class="pl-k">int</span> i=<span class="pl-c1">0</span>;i&lt;sz;i++)<span class="pl-c"><span class="pl-c">//</span>初始化并查集</span>
+		{
+			fa[i]=i;
+		}
+		<span class="pl-c1">judge</span>(t);<span class="pl-c"><span class="pl-c">//</span>判断</span>
+	}
+	<span class="pl-k">return</span> <span class="pl-c1">0</span>;
+}</pre></div></div>
 <div style="font-size:small;margin-top:8px;float:right;"></div>
 
 <button class="btn btn-block" type="button" onclick="openComments()" id="cmButton">评论</button>
