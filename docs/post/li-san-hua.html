@@ -119,7 +119,7 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 </code></pre>
 <h2>说明/提示</h2>
 <h3>数据规模与约定</h3>
-<p>对于全部的测试点，保证 $1 \leq n \leq 2 \times 10^4$， $-2^{31} \leq a &amp;lt;  b \lt 2^{31}$ ，且答案小于 $2^{31}$ 。</p>
+<p>对于全部的测试点，保证 $1 \leq n \leq 2 \times 10^4$， $-2^{31} \leq a &amp;lt; b \lt 2^{31}$ ，且答案小于 $2^{31}$ 。</p>
 <h2>分析</h2>
 <p>数据值得范围非常大，<code class="notranslate">2^31</code>无法用数组表示，并且还有负值，固考虑离散化。这道题的意思就是有一条白色的线段，每次给出一个左闭右开的区间<code class="notranslate">[a,b)</code>进行染色，求最后被染色的区间长度。不难发现这道题还涉及区间修改，也需要使用<strong>差分</strong>。<br>
 如果有一个离散化端点被访问过，在原数组中有多长的区间被访问过呢？<strong>我们离散化后的区间端点在数轴上画出了一道一道的“分割线”，把原本连续的数轴切分成了一个个独立的没有重合的区间段。每一个离散化端点是否被访问就代表着端点后的区间段是否被访问。可以轻松的算出端点<code class="notranslate">i</code>对应的区间长度为<code class="notranslate">t[i+1]-t[i]</code></strong>。<br>
