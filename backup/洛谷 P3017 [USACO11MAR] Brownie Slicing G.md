@@ -66,3 +66,57 @@ Bessie 必须将布朗尼分成 4 条水平带，每条带有两块。Bessie 可
 ## 说明/提示
 
 （由 ChatGPT 4o 翻译）
+
+## 分析
+求最大，二分答案。所有二分答案的题目难点都在于``check()``函数怎么写，让我们看看这道题。我们要切出``A*B``个子块，每个子块的值都要大于一个阈值。我们**先按照列进行切分，看看在当前的值下一行蛋糕能否切出``B``个满足条件的子块，如果不行，我们就带上下一行继续切，以此类推，直到可以切出``B``个为止**。最后我们**只用检查在行方向上是否切出``A``条子块**。如果对多行蛋糕进行切分呢？可以把上一行加到下一行来，但是太麻烦，可以**直接使用二维前缀和来解决这个问题**。代码如下：
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+const int N=505;
+int r,c,a,b;
+int cake[N][N];
+int subcake(int x1,int y1,int x2,int y2)
+{
+	return cake[x2][y2]-cake[x2][y1-1]-cake[x1-1][y2]+cake[x1-1][y1-1];//二维前缀和求子区间
+}
+bool check(int mid)
+{
+	int row=1;//当前行号
+	int cnta=0;//在行方向切出的区间数
+	for(int i=1;i<=r;i++)
+	{
+		int col=1,cntb=0;//当前列号和在列方向切出的区间数
+		for(int j=1;j<=c;j++)
+		{
+			if(subcake(row,col,i,j)>=mid)cntb++,col=j+1;//如果(row,col,i,j)这个区间满足要求，列方向区间数cntb加1，列号col=j+1，来到切分后的下一列
+		}
+		if(cntb>=b)//如果这一行切出足够的区间
+		{
+			cnta++;//行方向区间加1
+			row=i+1;//来到切分后的下一行
+		}
+	}
+	return cnta>=a;//判断行方向区间数目是否合法
+}
+int main()
+{
+	cin>>r>>c>>a>>b;
+	for(int i=1;i<=r;i++)
+	{
+		for(int j=1;j<=c;j++)
+		{
+			cin>>cake[i][j];
+			cake[i][j]+=cake[i-1][j]+cake[i][j-1]-cake[i-1][j-1];//计算前缀和
+		}
+	}
+	int l=0,r=1e7+5;
+	while(l+1<r)
+	{
+		int mid=l+(r-l)/2;
+		if(check(mid))l=mid;//如果区间树合法就尝试更大的值
+		else r=mid;
+	}
+	cout<<l;
+	return 0;
+}
+```
