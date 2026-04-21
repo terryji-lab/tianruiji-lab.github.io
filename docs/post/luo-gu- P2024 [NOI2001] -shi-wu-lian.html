@@ -144,8 +144,8 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 {
     <span class="pl-k">if</span>(fa[u]==u)<span class="pl-k">return</span> u;
     <span class="pl-k">int</span> t=<span class="pl-c1">find</span>(fa[u]);<span class="pl-c"><span class="pl-c">//</span>递归到根部</span>
-    d[x]+=d[fa[x]];<span class="pl-c"><span class="pl-c">//</span>返回加权节点权重</span>
-    <span class="pl-k">return</span> fa[x]=t;<span class="pl-c"><span class="pl-c">//</span>当前节点的父亲接到根上去</span>
+    d[u]+=d[fa[u]];<span class="pl-c"><span class="pl-c">//</span>返回加权节点权重</span>
+    <span class="pl-k">return</span> fa[u]=t;<span class="pl-c"><span class="pl-c">//</span>当前节点的父亲接到根上去</span>
 }</pre></div>
 <p>我们知道每个集合在合并之前都是一个<strong>独立的合法的</strong>系统，我们要考虑怎么合并让这两个集合合并后依旧合法。比如<code class="notranslate">x</code>和<code class="notranslate">y</code>是同类，我们把<code class="notranslate">x</code>所在的集合合并到<code class="notranslate">y</code>所在的集合上去，那么合并后<code class="notranslate">x</code>和<code class="notranslate">y</code>到根的权值应该是相等的，即<code class="notranslate">d[fa[x]]=d[y]-d[x]</code>。如果<code class="notranslate">x</code>可以捕食<code class="notranslate">y</code>，那么<code class="notranslate">d[fa[x]]=d[y]-d[x]+1</code>表明 两点间的权值差为<code class="notranslate">1</code>。<br>
 下一个问题是我们如何判断题目输入的条件是不是合法？<strong>我们只需要先判断<code class="notranslate">x</code>和<code class="notranslate">y</code>是不是在同一个集合中，如果在，就判断两个点是否符合题目给出的条件，如果不在，就将两个点按照题目给的条件加入一个集合</strong>。</p></div>
