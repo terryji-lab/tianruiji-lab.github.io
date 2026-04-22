@@ -39,7 +39,7 @@ double Area(double len,double wid)
 {
 	return len*wid;
 }
-double Area(double a,double b,double c)
+double Area(double a,double b,double c)//三个函数参数不同
 {
 	double p=(a+b+c)/2;
 	return sqrt(p*(p-a)*(p-b)*(p-c));
