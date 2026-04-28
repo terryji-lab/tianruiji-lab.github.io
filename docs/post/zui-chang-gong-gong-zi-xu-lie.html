@@ -111,7 +111,7 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
     {
         <span class="pl-k">for</span>(<span class="pl-k">int</span> j=<span class="pl-c1">1</span>;j&lt;=n;j++)
         {
-            <span class="pl-k">if</span>(a[i]==b[i])dp[i][j]=dp[i-<span class="pl-c1">1</span>][j-<span class="pl-c1">1</span>]+<span class="pl-c1">1</span>;
+            <span class="pl-k">if</span>(a[i]==b[j])dp[i][j]=dp[i-<span class="pl-c1">1</span>][j-<span class="pl-c1">1</span>]+<span class="pl-c1">1</span>;
             <span class="pl-k">else</span> dp[i][j]=<span class="pl-c1">max</span>(dp[i-<span class="pl-c1">1</span>][j],dp[i][j-<span class="pl-c1">1</span>]);
         }
     }
@@ -171,7 +171,34 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
     <span class="pl-c1">Print</span>(n,n);
     <span class="pl-k">return</span> <span class="pl-c1">0</span>;
 }
-</pre></div></div>
+</pre></div>
+<h1>最长公共子串</h1>
+<p>子串和子序列的差别就在于是否连续，子序列可以是不连续的，但是子串一定是连续的，所以我们要对状态转移方程进行修改，如果<code class="notranslate">a[i]!=b[j]</code>时，直接<code class="notranslate">dp[i][j]=0</code>，最后整个<code class="notranslate">dp[][]</code>数组中的最大值就是最长公共子串的长度。</p>
+<h2>代码</h2>
+<div class="highlight highlight-source-c++"><pre class="notranslate">#<span class="pl-k">include</span> <span class="pl-s"><span class="pl-pds">&lt;</span>bits/stdc++.h<span class="pl-pds">&gt;</span></span>
+<span class="pl-k">using</span> <span class="pl-k">namespace</span> <span class="pl-en">std</span><span class="pl-k">;</span>
+<span class="pl-k">const</span> <span class="pl-k">int</span> N=<span class="pl-c1">3000</span>;
+<span class="pl-k">int</span> dp[N][N];
+<span class="pl-k">int</span> a[N];
+<span class="pl-k">int</span> b[N];
+<span class="pl-k">int</span> n,ans;
+<span class="pl-k">int</span> <span class="pl-en">main</span>()
+{
+    cin&gt;&gt;n;
+    <span class="pl-k">for</span>(<span class="pl-k">int</span> i=<span class="pl-c1">1</span>;i&lt;=n;i++)cin&gt;&gt;a[i];
+    <span class="pl-k">for</span>(<span class="pl-k">int</span> i=<span class="pl-c1">1</span>;i&lt;=n;i++)cin&gt;&gt;b[i];
+    <span class="pl-k">for</span>(<span class="pl-k">int</span> i=<span class="pl-c1">1</span>;i&lt;=n;i++)
+    {
+        <span class="pl-k">for</span>(<span class="pl-k">int</span> j=<span class="pl-c1">1</span>;j&lt;=n;j++)
+        {
+            <span class="pl-k">if</span>(a[i]==b[j])dp[i][j]=dp[i-<span class="pl-c1">1</span>][j-<span class="pl-c1">1</span>]+<span class="pl-c1">1</span>;
+            <span class="pl-k">else</span> dp[i][j]=<span class="pl-c1">0</span>;
+            ans=<span class="pl-c1">max</span>(ans,dp[i][j]);
+        }
+    }
+    cout&lt;&lt;ans;
+    <span class="pl-k">return</span> <span class="pl-c1">0</span>;
+}</pre></div></div>
 <div style="font-size:small;margin-top:8px;float:right;"></div>
 
 <button class="btn btn-block" type="button" onclick="openComments()" id="cmButton">评论</button>
