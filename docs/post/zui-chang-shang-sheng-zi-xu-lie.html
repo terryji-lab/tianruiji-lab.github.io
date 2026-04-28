@@ -168,7 +168,8 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
     }
     cout&lt;&lt;len;<span class="pl-c"><span class="pl-c">//</span>输出长度</span>
     <span class="pl-k">return</span> <span class="pl-c1">0</span>;
-}</pre></div></div>
+}</pre></div>
+<p>当然也可以使用cpp中自带的<code class="notranslate">lower_bound</code>和<code class="notranslate">upper_bound</code>函数来实现<strong>查找第一个大于等于查找元素的位置</strong>和<strong>第一个大于查找元素的位置</strong>，来求<strong>上升子序列</strong>和<strong>不下降子序列</strong>。如果需要求<strong>下降子序列</strong>和<strong>不上升子序列</strong>，则修改比较器为<code class="notranslate">greater&lt;int&gt;()</code>。这里记住，<code class="notranslate">lower_bound</code>是求<strong>严格单调</strong>的，<code class="notranslate">upper_bound</code>是<strong>非严格单调</strong>。</p></div>
 <div style="font-size:small;margin-top:8px;float:right;"></div>
 
 <button class="btn btn-block" type="button" onclick="openComments()" id="cmButton">评论</button>
