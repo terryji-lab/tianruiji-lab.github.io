@@ -91,7 +91,7 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 <p>可以说是背包问题梦的起点了。<strong>01</strong>的含义就是每个物品只有一个，不选就是<code class="notranslate">0</code>，选了就是<code class="notranslate">1</code>。</p>
 <h3>朴素算法</h3>
 <h3>DP数组含义</h3>
-<p>朴素算法使用一个二维dp数组来实现，<code class="notranslate">dp[i][j]</code>表示考虑第<code class="notranslate">i</code>件物品在背包容量为<code class="notranslate">j</code>的时候，背包所能容纳的最大价值。</p>
+<p>朴素算法使用一个二维dp数组来实现，<code class="notranslate">dp[i][j]</code>表示考虑前<code class="notranslate">i</code>件物品在背包容量为<code class="notranslate">j</code>的时候，背包所能容纳的最大价值。</p>
 <h3>初始化</h3>
 <p><code class="notranslate">dp[0][j]</code>和<code class="notranslate">dp[i][0]</code>都初始化为<code class="notranslate">0</code>，因为在考虑第<code class="notranslate">0</code>件物品和背包容量为<code class="notranslate">0</code>的时候，所容纳价值一定为<code class="notranslate">0</code>。（这里物品的下标从<code class="notranslate">1</code>开始）</p>
 <h3>递推公式</h3>
