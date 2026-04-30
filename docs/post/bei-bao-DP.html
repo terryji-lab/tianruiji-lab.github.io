@@ -144,6 +144,40 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 	{
 		dp[j]=<span class="pl-c1">max</span>(dp[j],dp[j-w[i]]+v[i]);
 	}
+}</pre></div>
+<h2>多重背包</h2>
+<p>多重背包与01背包的区别是01背包中每个物品只有一件，而多重背包中每个物品有多件。因此，01背包中选与不选的问题，到了多重背包中就成了选还是不选，选的话要选几件的问题了。实际上就是转化为01背包问题，对相同的每一件物品讨论取与不取的问题。</p>
+<h3>朴素算法</h3>
+<h3>代码</h3>
+<div class="highlight highlight-source-c++"><pre class="notranslate"><span class="pl-k">for</span>(<span class="pl-k">int</span> i=<span class="pl-c1">1</span>;i&lt;=n;i++)
+{
+    <span class="pl-k">for</span>(<span class="pl-k">int</span> j=m;j&gt;=w[i];j--)
+    {
+        <span class="pl-k">for</span>(<span class="pl-k">int</span> k=<span class="pl-c1">0</span>;k&lt;=s[i] &amp;&amp; k*w[i]&lt;=j;k++)
+        {
+            dp[j]=<span class="pl-c1">max</span>(dp[j],dp[j-k*w[i]]+k*v[i]);
+        }
+    }
+}</pre></div>
+<p>但是显然这样的时间复杂度很高。由于有一些物品是相同的，所以我们不用一件一件的来考虑，可以把它们合并起来，这就是我要介绍的二进制优化法。</p>
+<h3>二进制优化</h3>
+<p>我们把每种物品按照<strong>2的n次方</strong>来进行分组，依旧可以组合出任意数量的物品，考虑的时候也不需要一件一件进行考虑了，减少了物品的总数。</p>
+<h3>代码</h3>
+<div class="highlight highlight-source-c++"><pre class="notranslate"><span class="pl-k">int</span> len=<span class="pl-c1">0</span>;
+<span class="pl-k">for</span>(<span class="pl-k">int</span> i=<span class="pl-c1">1</span>;i&lt;=n;i++)
+{
+    cin&gt;&gt;vv&gt;&gt;ww&gt;&gt;s;
+    <span class="pl-k">for</span>(<span class="pl-k">int</span> j=<span class="pl-c1">1</span>;j&lt;=s;j&lt;&lt;=<span class="pl-c1">1</span>)<span class="pl-c"><span class="pl-c">//</span>j从1开始，每次乘2</span>
+    {
+        v[++len]=j*vv;
+        w[len]=j*ww;
+        s-=j;<span class="pl-c"><span class="pl-c">//</span>减去拿走的物品数量</span>
+    }
+    <span class="pl-k">if</span>(s)<span class="pl-c"><span class="pl-c">//</span>如果有剩余，进行处理</span>
+    {
+        v[++len]=s*vv;
+        w[len]=s*ww;
+    }
 }</pre></div></div>
 <div style="font-size:small;margin-top:8px;float:right;"></div>
 
