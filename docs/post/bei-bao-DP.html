@@ -11,9 +11,11 @@
         document.documentElement.setAttribute("data-color-mode", theme);
     </script>
 <meta name="description" content="# 背包DP
+
 背包问题就是在给定的容量内使物品的价值最大化。">
 <meta property="og:title" content="背包DP">
 <meta property="og:description" content="# 背包DP
+
 背包问题就是在给定的容量内使物品的价值最大化。">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://terryji-lab.github.io/tianruiji-lab.github.io/post/bei-bao-DP.html">
@@ -86,99 +88,284 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 </div>
     <div id="content">
 <div class="markdown-body" id="postBody"><h1>背包DP</h1>
-<p>背包问题就是在给定的容量内使物品的价值最大化。这里我会介绍<strong>01背包</strong>，<strong>完全背包</strong>，<strong>多重背包</strong>，<strong>分组背包</strong>四种经典的背包DP。</p>
+<p>背包问题就是在给定的容量内使物品的价值最大化。这里我会介绍 <strong>01背包</strong>、<strong>完全背包</strong>、<strong>多重背包</strong>、<strong>分组背包</strong> 四种经典的背包DP。</p>
+<hr>
 <h2>01背包</h2>
-<p>可以说是背包问题梦的起点了。<strong>01</strong>的含义就是每个物品只有一个，不选就是<code class="notranslate">0</code>，选了就是<code class="notranslate">1</code>。</p>
+<p>可以说是背包问题梦的起点了。<strong>01</strong> 的含义就是每个物品只有一个，不选就是 <code class="notranslate">0</code>，选了就是 <code class="notranslate">1</code>。</p>
 <h3>朴素算法</h3>
-<h3>DP数组含义</h3>
-<p>朴素算法使用一个二维dp数组来实现，<code class="notranslate">dp[i][j]</code>表示考虑前<code class="notranslate">i</code>件物品在背包容量为<code class="notranslate">j</code>的时候，背包所能容纳的最大价值。</p>
-<h3>初始化</h3>
-<p><code class="notranslate">dp[0][j]</code>和<code class="notranslate">dp[i][0]</code>都初始化为<code class="notranslate">0</code>，因为在考虑第<code class="notranslate">0</code>件物品和背包容量为<code class="notranslate">0</code>的时候，所容纳价值一定为<code class="notranslate">0</code>。（这里物品的下标从<code class="notranslate">1</code>开始）</p>
-<h3>递推公式</h3>
-<p>我们先固定物品，考虑容量，然后更新物品。当我们在考虑第<code class="notranslate">i</code>件物品的时候，如果物品重量小于背包容量，我们有两个选择，拿或者不拿。如果大于背包容量，就只有不拿了。在状态转移方程中的表示就是：</p>
+<h4>DP数组含义</h4>
+<p>朴素算法使用一个二维dp数组来实现，<code class="notranslate">dp[i][j]</code> 表示考虑前 <code class="notranslate">i</code> 件物品在背包容量为 <code class="notranslate">j</code> 的时候，背包所能容纳的最大价值。</p>
+<h4>初始化</h4>
+<p><code class="notranslate">dp[0][j]</code> 和 <code class="notranslate">dp[i][0]</code> 都初始化为 <code class="notranslate">0</code>，因为在考虑第 <code class="notranslate">0</code> 件物品和背包容量为 <code class="notranslate">0</code> 的时候，所容纳价值一定为 <code class="notranslate">0</code>。（这里物品的下标从 <code class="notranslate">1</code> 开始）</p>
+<h4>递推公式</h4>
+<p>我们先固定物品，考虑容量，然后更新物品。当我们在考虑第 <code class="notranslate">i</code> 件物品的时候，如果物品重量小于背包容量，我们有两个选择，拿或者不拿。如果大于背包容量，就只有不拿了。在状态转移方程中的表示就是：</p>
 <ul>
-<li>如果背包容量<code class="notranslate">j&lt;w[i]</code>，不能放入，最大价值和不考虑这个物品是一样的，<code class="notranslate">dp[i][j]=dp[i-1][j]</code></li>
-<li>如果背包容量<code class="notranslate">j&gt;=w[i]</code>，可以放入，选择放和不放当中较大的那一个值，<code class="notranslate">dp[i][j]=max(dp[i-1][j],dp[i-1][j-w[i]]+v[i])</code>，这里<code class="notranslate">j-w[i]</code>就是放入物品后的背包剩余容量，我们用剩余容量的最大价值加上物品<code class="notranslate">i</code>的价值就得到了放入物品的最大价值。放入最大价值与不放入最大价值取最大值就是当前状态最大价值。<br>
-最后<code class="notranslate">dp[n][m]</code>就是所求的答案。</li>
+<li>如果背包容量 <code class="notranslate">j &lt; w[i]</code>，不能放入，最大价值和不考虑这个物品是一样的，<code class="notranslate">dp[i][j] = dp[i-1][j]</code></li>
+<li>如果背包容量 <code class="notranslate">j &gt;= w[i]</code>，可以放入，选择放和不放当中较大的那一个值，<code class="notranslate">dp[i][j] = max(dp[i-1][j], dp[i-1][j-w[i]] + v[i])</code>，这里 <code class="notranslate">j - w[i]</code> 就是放入物品后的背包剩余容量，我们用剩余容量的最大价值加上物品 <code class="notranslate">i</code> 的价值就得到了放入物品的最大价值。放入最大价值与不放入最大价值取最大值就是当前状态最大价值。</li>
 </ul>
-<h3>代码</h3>
-<div class="highlight highlight-source-c++"><pre class="notranslate"><span class="pl-k">for</span>(<span class="pl-k">int</span> i=<span class="pl-c1">1</span>;i&lt;=n;i++)
+<p>最后 <code class="notranslate">dp[n][m]</code> 就是所求的答案。</p>
+<h4>代码</h4>
+<div class="highlight highlight-source-c++"><pre class="notranslate"><span class="pl-k">for</span> (<span class="pl-k">int</span> i = <span class="pl-c1">1</span>; i &lt;= n; i++)
 {
-	<span class="pl-k">for</span>(<span class="pl-k">int</span> j=<span class="pl-c1">1</span>;j&lt;=m;j++)
-	{
-		<span class="pl-k">if</span>(j&lt;w[i])dp[i][j]=dp[i-<span class="pl-c1">1</span>][j];
-		<span class="pl-k">else</span> dp[i][j]=<span class="pl-c1">max</span>(dp[i-<span class="pl-c1">1</span>][j],dp[i-<span class="pl-c1">1</span>][j-w[i]]+v[i]);
-	}
+    <span class="pl-k">for</span> (<span class="pl-k">int</span> j = <span class="pl-c1">1</span>; j &lt;= m; j++)
+    {
+        <span class="pl-k">if</span> (j &lt; w[i])
+            dp[i][j] = dp[i-<span class="pl-c1">1</span>][j];
+        <span class="pl-k">else</span>
+            dp[i][j] = <span class="pl-c1">max</span>(dp[i-<span class="pl-c1">1</span>][j], dp[i-<span class="pl-c1">1</span>][j-w[i]] + v[i]);
+    }
 }</pre></div>
 <h3>滚动数组优化</h3>
 <p>我们开一个二维数组，空间复杂度过大，可以只使用一个一维滚动数组来解决这个问题。</p>
-<h3>DP数组含义</h3>
-<p><code class="notranslate">dp[i]</code>表示容量为<code class="notranslate">i</code>时背包能容纳的最大价值。</p>
-<h3>初始化</h3>
-<p><code class="notranslate">dp[]</code>刚开始全部初始化为<code class="notranslate">0</code>，表示考虑<code class="notranslate">0</code>件物品时，最大价值为<code class="notranslate">0</code>。</p>
-<h3>递推公式</h3>
-<p>如果放不下物品，那么<code class="notranslate">dp[j]=dp[j]</code>，不改变能容纳的最大值，否则<code class="notranslate">dp[j]=max(dp[j],dp[j-w[i]]+v[i])</code>，更新为选取与不选取当中较大的那一个值。这个这里一定要倒序遍历<code class="notranslate">dp[j]</code>，我们可以把数组划分为更新后和未更新的两个部分。更新前表示没有考虑这个物品，更新后表示考虑了这个物品。我们更新一个位置需要的是未更新的位置的状态，也就是还未考虑这个物品的状态，如果我们顺序遍历，那么就会反复使用更新后的位置，相当于一个物品考虑了多次，变成了完全背包问题，所以我们需要倒序遍历，始终使用未更新的部分去更新状态。</p>
-<h3>代码</h3>
-<div class="highlight highlight-source-c++"><pre class="notranslate"><span class="pl-k">for</span>(<span class="pl-k">int</span> i=<span class="pl-c1">1</span>;i&lt;=n;i++)
+<h4>DP数组含义</h4>
+<p><code class="notranslate">dp[i]</code> 表示容量为 <code class="notranslate">i</code> 时背包能容纳的最大价值。</p>
+<h4>初始化</h4>
+<p><code class="notranslate">dp[]</code> 刚开始全部初始化为 <code class="notranslate">0</code>，表示考虑 <code class="notranslate">0</code> 件物品时，最大价值为 <code class="notranslate">0</code>。</p>
+<h4>递推公式</h4>
+<p>如果放不下物品，那么 <code class="notranslate">dp[j] = dp[j]</code>，不改变能容纳的最大值，否则 <code class="notranslate">dp[j] = max(dp[j], dp[j-w[i]] + v[i])</code>，更新为选取与不选取当中较大的那一个值。<strong>这里一定要倒序遍历 <code class="notranslate">dp[j]</code></strong>，我们可以把数组划分为更新后和未更新的两个部分。更新前表示没有考虑这个物品，更新后表示考虑了这个物品。我们更新一个位置需要的是未更新的位置的状态，也就是还未考虑这个物品的状态，如果我们顺序遍历，那么就会反复使用更新后的位置，相当于一个物品考虑了多次，变成了完全背包问题，所以我们需要倒序遍历，始终使用未更新的部分去更新状态。</p>
+<h4>代码</h4>
+<div class="highlight highlight-source-c++"><pre class="notranslate"><span class="pl-k">for</span> (<span class="pl-k">int</span> i = <span class="pl-c1">1</span>; i &lt;= n; i++)
 {
-	<span class="pl-k">for</span>(<span class="pl-k">int</span> j=m;j&gt;=w[i];j--)<span class="pl-c"><span class="pl-c">//</span>这里我直接改变遍历范围，避免不必要的判断操作</span>
-	{
-		dp[j]=<span class="pl-c1">max</span>(dp[j],dp[j-w[i]]+v[i]);
-	}
-}</pre></div>
-<h2>完全背包</h2>
-<p>完全背包与01背包非常类似，区别就在于完全背包中的物品可以被考虑无数次，所以只需要对代码进行一点点修改就好了，这里直接给出代码。</p>
-<h3>代码</h3>
-<div class="highlight highlight-source-c++"><pre class="notranslate"><span class="pl-k">for</span>(<span class="pl-k">int</span> i=<span class="pl-c1">1</span>;i&lt;=n;i++)
-{
-	<span class="pl-k">for</span>(<span class="pl-k">int</span> j=<span class="pl-c1">1</span>;j&lt;=m;j++)
-	{
-		<span class="pl-k">if</span>(j&lt;w[i])dp[i][j]=dp[i-<span class="pl-c1">1</span>][j];
-		<span class="pl-k">else</span> dp[i][j]=<span class="pl-c1">max</span>(dp[i-<span class="pl-c1">1</span>][j],dp[i][j-w[i]]+v[i]);
-	}
-}</pre></div>
-<p>同样也可以使用一维滚动数组优化，只需要改变遍历顺序即可，代码如下：</p>
-<div class="highlight highlight-source-c++"><pre class="notranslate"><span class="pl-k">for</span>(<span class="pl-k">int</span> i=<span class="pl-c1">1</span>;i&lt;=n;i++)
-{
-	<span class="pl-k">for</span>(<span class="pl-k">int</span> j=w[i];j&lt;=m;j++)
-	{
-		dp[j]=<span class="pl-c1">max</span>(dp[j],dp[j-w[i]]+v[i]);
-	}
-}</pre></div>
-<h2>多重背包</h2>
-<p>多重背包与01背包的区别是01背包中每个物品只有一件，而多重背包中每个物品有多件。因此，01背包中选与不选的问题，到了多重背包中就成了选还是不选，选的话要选几件的问题了。实际上就是转化为01背包问题，对相同的每一件物品讨论取与不取的问题。</p>
-<h3>朴素算法</h3>
-<h3>代码</h3>
-<div class="highlight highlight-source-c++"><pre class="notranslate"><span class="pl-k">for</span>(<span class="pl-k">int</span> i=<span class="pl-c1">1</span>;i&lt;=n;i++)
-{
-    <span class="pl-k">for</span>(<span class="pl-k">int</span> j=m;j&gt;=w[i];j--)
+    <span class="pl-k">for</span> (<span class="pl-k">int</span> j = m; j &gt;= w[i]; j--) <span class="pl-c"><span class="pl-c">//</span> 这里我直接改变遍历范围，避免不必要的判断操作</span>
     {
-        <span class="pl-k">for</span>(<span class="pl-k">int</span> k=<span class="pl-c1">0</span>;k&lt;=s[i] &amp;&amp; k*w[i]&lt;=j;k++)
+        dp[j] = <span class="pl-c1">max</span>(dp[j], dp[j-w[i]] + v[i]);
+    }
+}</pre></div>
+<blockquote>
+<p><strong>复杂度</strong>：时间复杂度 $O(nm)$，空间复杂度 $O(m)$。</p>
+</blockquote>
+<hr>
+<h2>完全背包</h2>
+<p>完全背包与01背包非常类似，区别就在于完全背包中的物品可以被考虑无数次，所以只需要对代码进行一点点修改就好了。</p>
+<p><strong>与01背包的核心区别</strong>：在二维递推中，放入物品后应转移到 <code class="notranslate">dp[i][j-w[i]]</code>（同一行，即同一物品还能再选），而非 <code class="notranslate">dp[i-1][j-w[i]]</code>（上一行）。</p>
+<h3>朴素算法</h3>
+<h4>代码</h4>
+<div class="highlight highlight-source-c++"><pre class="notranslate"><span class="pl-k">for</span> (<span class="pl-k">int</span> i = <span class="pl-c1">1</span>; i &lt;= n; i++)
+{
+    <span class="pl-k">for</span> (<span class="pl-k">int</span> j = <span class="pl-c1">1</span>; j &lt;= m; j++)
+    {
+        <span class="pl-k">if</span> (j &lt; w[i])
+            dp[i][j] = dp[i-<span class="pl-c1">1</span>][j];
+        <span class="pl-k">else</span>
+            dp[i][j] = <span class="pl-c1">max</span>(dp[i-<span class="pl-c1">1</span>][j], dp[i][j-w[i]] + v[i]);
+    }
+}</pre></div>
+<h3>滚动数组优化</h3>
+<p>同样也可以使用一维滚动数组优化，只需要改变遍历顺序即可——<strong>顺序遍历</strong>，这正是完全背包与01背包在代码层面最直观的区别：</p>
+<div class="highlight highlight-source-c++"><pre class="notranslate"><span class="pl-k">for</span> (<span class="pl-k">int</span> i = <span class="pl-c1">1</span>; i &lt;= n; i++)
+{
+    <span class="pl-k">for</span> (<span class="pl-k">int</span> j = w[i]; j &lt;= m; j++) <span class="pl-c"><span class="pl-c">//</span> 顺序遍历，允许同一物品被多次选取</span>
+    {
+        dp[j] = <span class="pl-c1">max</span>(dp[j], dp[j-w[i]] + v[i]);
+    }
+}</pre></div>
+<blockquote>
+<p><strong>复杂度</strong>：时间复杂度 $O(nm)$，空间复杂度 $O(m)$。</p>
+</blockquote>
+<hr>
+<h2>多重背包</h2>
+<p>多重背包与01背包的区别是01背包中每个物品只有一件，而多重背包中每个物品有多件。因此，01背包中选与不选的问题，到了多重背包中就成了选还是不选，选的话要选几件的问题了。本质上可以转化为01背包问题，对相同的每一件物品讨论取与不取的问题。</p>
+<h3>朴素算法</h3>
+<p>直接枚举每件物品选取的件数 <code class="notranslate">k</code>（<code class="notranslate">0 ≤ k ≤ s[i]</code> 且 <code class="notranslate">k × w[i] ≤ j</code>）：</p>
+<div class="highlight highlight-source-c++"><pre class="notranslate"><span class="pl-k">for</span> (<span class="pl-k">int</span> i = <span class="pl-c1">1</span>; i &lt;= n; i++)
+{
+    <span class="pl-k">for</span> (<span class="pl-k">int</span> j = m; j &gt;= w[i]; j--)
+    {
+        <span class="pl-k">for</span> (<span class="pl-k">int</span> k = <span class="pl-c1">0</span>; k &lt;= s[i] &amp;&amp; k * w[i] &lt;= j; k++)
         {
-            dp[j]=<span class="pl-c1">max</span>(dp[j],dp[j-k*w[i]]+k*v[i]);
+            dp[j] = <span class="pl-c1">max</span>(dp[j], dp[j - k * w[i]] + k * v[i]);
         }
     }
 }</pre></div>
-<p>但是显然这样的时间复杂度很高。由于有一些物品是相同的，所以我们不用一件一件的来考虑，可以把它们合并起来，这就是我要介绍的二进制优化法。</p>
+<blockquote>
+<p><strong>复杂度</strong>：时间复杂度 $O(m \sum s[i])$，当物品数量很大时非常慢。</p>
+</blockquote>
 <h3>二进制优化</h3>
-<p>我们把每种物品按照<strong>2的n次方</strong>来进行分组，依旧可以组合出任意数量的物品，考虑的时候也不需要一件一件进行考虑了，减少了物品的总数。</p>
-<h3>代码</h3>
-<div class="highlight highlight-source-c++"><pre class="notranslate"><span class="pl-k">int</span> len=<span class="pl-c1">0</span>;
-<span class="pl-k">for</span>(<span class="pl-k">int</span> i=<span class="pl-c1">1</span>;i&lt;=n;i++)
+<p>但是显然这样的时间复杂度很高。由于有一些物品是相同的，所以我们不用一件一件的来考虑，可以把它们合并起来，这就是我要介绍的二进制优化法。</p>
+<p>我们把每种物品按照 <strong>2 的 n 次方</strong> 来进行分组，依旧可以组合出任意数量的物品，考虑的时候也不需要一件一件进行考虑了，减少了物品的总数。</p>
+<p><strong>拆分方法</strong>：对于数量为 <code class="notranslate">s</code> 的物品，将其拆成 <code class="notranslate">1, 2, 4, 8, ..., 2^k, r</code> 份，其中 $r = s - (2^{k+1} - 1)$ 且 $r &amp;lt; 2^{k+1}$。这样任意 <code class="notranslate">1</code> 到 <code class="notranslate">s</code> 以内的选取数量都可以由这些拆分后的组组合出来。</p>
+<h4>拆分代码</h4>
+<div class="highlight highlight-source-c++"><pre class="notranslate"><span class="pl-k">int</span> len = <span class="pl-c1">0</span>; <span class="pl-c"><span class="pl-c">//</span> 拆分后物品的总数</span>
+<span class="pl-k">for</span> (<span class="pl-k">int</span> i = <span class="pl-c1">1</span>; i &lt;= n; i++)
 {
-    cin&gt;&gt;vv&gt;&gt;ww&gt;&gt;s;
-    <span class="pl-k">for</span>(<span class="pl-k">int</span> j=<span class="pl-c1">1</span>;j&lt;=s;j&lt;&lt;=<span class="pl-c1">1</span>)<span class="pl-c"><span class="pl-c">//</span>j从1开始，每次乘2</span>
+    cin &gt;&gt; vv &gt;&gt; ww &gt;&gt; s; <span class="pl-c"><span class="pl-c">//</span> 价值、重量、数量</span>
+    <span class="pl-k">for</span> (<span class="pl-k">int</span> j = <span class="pl-c1">1</span>; j &lt;= s; j &lt;&lt;= <span class="pl-c1">1</span>) <span class="pl-c"><span class="pl-c">//</span> j从1开始，每次乘2</span>
     {
-        v[++len]=j*vv;
-        w[len]=j*ww;
-        s-=j;<span class="pl-c"><span class="pl-c">//</span>减去拿走的物品数量</span>
+        v[++len] = j * vv; <span class="pl-c"><span class="pl-c">//</span> 新物品的价值</span>
+        w[len] = j * ww;   <span class="pl-c"><span class="pl-c">//</span> 新物品的重量</span>
+        s -= j;            <span class="pl-c"><span class="pl-c">//</span> 减去拿走的物品数量</span>
     }
-    <span class="pl-k">if</span>(s)<span class="pl-c"><span class="pl-c">//</span>如果有剩余，进行处理</span>
+    <span class="pl-k">if</span> (s) <span class="pl-c"><span class="pl-c">//</span> 如果有剩余，处理剩余部分</span>
     {
-        v[++len]=s*vv;
-        w[len]=s*ww;
+        v[++len] = s * vv;
+        w[len] = s * ww;
     }
-}</pre></div></div>
+}</pre></div>
+<h4>拆分后用01背包求解</h4>
+<div class="highlight highlight-source-c++"><pre class="notranslate"><span class="pl-k">for</span> (<span class="pl-k">int</span> i = <span class="pl-c1">1</span>; i &lt;= len; i++)
+{
+    <span class="pl-k">for</span> (<span class="pl-k">int</span> j = m; j &gt;= w[i]; j--)
+    {
+        dp[j] = <span class="pl-c1">max</span>(dp[j], dp[j - w[i]] + v[i]);
+    }
+}</pre></div>
+<blockquote>
+<p><strong>复杂度</strong>：拆分后物品总数约为 $\sum \log_2 s[i]$，总时间复杂度 $O(m \sum \log s[i])$，空间复杂度 $O(m)$。</p>
+</blockquote>
+<blockquote>
+<p><strong>附</strong>：多重背包还可以使用<strong>单调队列优化</strong>做到 $O(nm)$，此处不再展开，感兴趣可自行查阅。</p>
+</blockquote>
+<hr>
+<h2>分组背包</h2>
+<p>分组背包是01背包的又一变种：有 <code class="notranslate">n</code> 组物品，<strong>每组内的物品最多只能选一个</strong>。不同组之间的选择互不影响，最终要在容量 <code class="notranslate">m</code> 内取得最大价值。</p>
+<blockquote>
+<p><strong>典型场景</strong>：比如你要买一个电脑，电脑有不同的品牌（即不同的组），每个品牌下有多款型号（物品），你只会买一台电脑，即每组最多选一个。</p>
+</blockquote>
+<h3>朴素算法</h3>
+<h4>DP数组含义</h4>
+<p><code class="notranslate">dp[i][j]</code> 表示考虑前 <code class="notranslate">i</code> 组物品，在背包容量为 <code class="notranslate">j</code> 的时候，背包所能容纳的最大价值。</p>
+<h4>初始化</h4>
+<p><code class="notranslate">dp[0][j]</code> 和 <code class="notranslate">dp[i][0]</code> 都初始化为 <code class="notranslate">0</code>。</p>
+<h4>递推公式</h4>
+<p>对于第 <code class="notranslate">i</code> 组，容量 <code class="notranslate">j</code> 从 <code class="notranslate">1</code> 到 <code class="notranslate">m</code>：</p>
+<ul>
+<li>先默认不选该组任何物品：<code class="notranslate">dp[i][j] = dp[i-1][j]</code></li>
+<li>然后遍历组内每个物品 <code class="notranslate">k</code>，若 <code class="notranslate">j &gt;= w[i][k]</code>，尝试选取该物品：<code class="notranslate">dp[i][j] = max(dp[i][j], dp[i-1][j - w[i][k]] + v[i][k])</code></li>
+</ul>
+<p>注意这里 <code class="notranslate">dp[i][j]</code> 的初值设为 <code class="notranslate">dp[i-1][j]</code>（不选该组），然后用组内各个物品去更新它——最终取到的就是"不选"和"选组内某个物品"中的最大值，保证了每组最多选一个。</p>
+<h4>代码</h4>
+<div class="highlight highlight-source-c++"><pre class="notranslate"><span class="pl-k">for</span> (<span class="pl-k">int</span> i = <span class="pl-c1">1</span>; i &lt;= n; i++)
+{
+    <span class="pl-k">for</span> (<span class="pl-k">int</span> j = <span class="pl-c1">1</span>; j &lt;= m; j++)
+    {
+        dp[i][j] = dp[i-<span class="pl-c1">1</span>][j]; <span class="pl-c"><span class="pl-c">//</span> 不选第i组</span>
+        <span class="pl-k">for</span> (<span class="pl-k">int</span> k = <span class="pl-c1">0</span>; k &lt; g[i].<span class="pl-c1">size</span>(); k++)
+        {
+            <span class="pl-k">if</span> (j &gt;= w[i][k])
+                dp[i][j] = <span class="pl-c1">max</span>(dp[i][j], dp[i-<span class="pl-c1">1</span>][j - w[i][k]] + v[i][k]);
+        }
+    }
+}</pre></div>
+<blockquote>
+<p><strong>复杂度</strong>：时间复杂度 $O(m \times \text{总物品数})$，空间复杂度 $O(nm)$。</p>
+</blockquote>
+<h3>滚动数组优化</h3>
+<p>观察递推公式，<code class="notranslate">dp[i][j]</code> 只依赖 <code class="notranslate">dp[i-1][...]</code>（上一行），因此可以像01背包那样用一维滚动数组优化空间。</p>
+<h4>DP数组含义</h4>
+<p><code class="notranslate">dp[j]</code> 表示容量为 <code class="notranslate">j</code> 时背包能容纳的最大价值（与01背包一致）。</p>
+<h4>递推公式</h4>
+<p>先枚举组，再倒序枚举容量，最后枚举组内的每个物品——只有这样才能保证每组内最多只选一个物品。</p>
+<ul>
+<li>对于第 <code class="notranslate">i</code> 组，容量 <code class="notranslate">j</code> 从 <code class="notranslate">m</code> 倒序遍历到 <code class="notranslate">0</code></li>
+<li>对于组内的每个物品 <code class="notranslate">k</code>，若 <code class="notranslate">j &gt;= w[i][k]</code>，则 <code class="notranslate">dp[j] = max(dp[j], dp[j - w[i][k]] + v[i][k])</code></li>
+</ul>
+<blockquote>
+<p><strong>为什么要倒序枚举容量？</strong> 和01背包同理——每个物品（这里是每组）最多选一个，倒序确保 <code class="notranslate">dp</code> 数组被更新时，用的是未考虑当前组的状态。</p>
+</blockquote>
+<blockquote>
+<p><strong>为什么组内物品循环在最内层？</strong> 如果把物品循环放在容量循环外面，则在同一个容量下可能会更新多次，导致同组物品被重复选取。</p>
+</blockquote>
+<h4>代码</h4>
+<div class="highlight highlight-source-c++"><pre class="notranslate"><span class="pl-k">for</span> (<span class="pl-k">int</span> i = <span class="pl-c1">1</span>; i &lt;= n; i++)              <span class="pl-c"><span class="pl-c">//</span> 枚举每组</span>
+{
+    <span class="pl-k">for</span> (<span class="pl-k">int</span> j = m; j &gt;= <span class="pl-c1">0</span>; j--)          <span class="pl-c"><span class="pl-c">//</span> 倒序枚举容量</span>
+    {
+        <span class="pl-k">for</span> (<span class="pl-k">int</span> k = <span class="pl-c1">0</span>; k &lt; g[i].<span class="pl-c1">size</span>(); k++) <span class="pl-c"><span class="pl-c">//</span> 枚举组内每个物品</span>
+        {
+            <span class="pl-k">if</span> (j &gt;= w[i][k])
+                dp[j] = <span class="pl-c1">max</span>(dp[j], dp[j - w[i][k]] + v[i][k]);
+        }
+    }
+}</pre></div>
+<blockquote>
+<p><strong>复杂度</strong>：时间复杂度 $O(m \times \text{总物品数})$，空间复杂度 $O(m)$。</p>
+</blockquote>
+<h3>进一步优化——边读边处理</h3>
+<p>上面的写法仍然需要预先存储所有组的 <code class="notranslate">w[i][k]</code> 和 <code class="notranslate">v[i][k]</code>。实际上我们完全可以一边读入数据一边 DP——为每组物品开一个临时的 <code class="notranslate">w[]</code> 和 <code class="notranslate">v[]</code> 一维数组，读入该组后立刻处理，处理完就释放，这样连物品数据都不用存。</p>
+<h4>完整代码</h4>
+<div class="highlight highlight-source-c++"><pre class="notranslate"><span class="pl-c"><span class="pl-c">//</span> 全局只需要 dp[m+1] 一个数组</span>
+<span class="pl-k">int</span> dp[MAXM];
+
+<span class="pl-k">int</span> <span class="pl-en">main</span>()
+{
+    <span class="pl-k">int</span> n, m;
+    cin &gt;&gt; n &gt;&gt; m;
+    <span class="pl-k">for</span> (<span class="pl-k">int</span> i = <span class="pl-c1">1</span>; i &lt;= n; i++)
+    {
+        <span class="pl-k">int</span> cnt;
+        cin &gt;&gt; cnt;                        <span class="pl-c"><span class="pl-c">//</span> 该组物品数量</span>
+        <span class="pl-k">int</span> w[cnt], v[cnt];                <span class="pl-c"><span class="pl-c">//</span> 临时的重量和价值数组</span>
+        <span class="pl-k">for</span> (<span class="pl-k">int</span> k = <span class="pl-c1">0</span>; k &lt; cnt; k++)
+            cin &gt;&gt; w[k] &gt;&gt; v[k];           <span class="pl-c"><span class="pl-c">//</span> 读入该组每个物品</span>
+        <span class="pl-k">for</span> (<span class="pl-k">int</span> j = m; j &gt;= <span class="pl-c1">0</span>; j--)       <span class="pl-c"><span class="pl-c">//</span> 倒序枚举容量</span>
+        {
+            <span class="pl-k">for</span> (<span class="pl-k">int</span> k = <span class="pl-c1">0</span>; k &lt; cnt; k++)  <span class="pl-c"><span class="pl-c">//</span> 枚举组内每个物品</span>
+            {
+                <span class="pl-k">if</span> (j &gt;= w[k])
+                    <span class="pl-c"><span class="pl-c">//</span> dp[j]的初值来自上一组，代表"不选该组任何物品"</span>
+                    <span class="pl-c"><span class="pl-c">//</span> max会和不选、选物品k两种情况中取最大值</span>
+                    dp[j] = <span class="pl-c1">max</span>(dp[j], dp[j - w[k]] + v[k]);
+            }
+        }
+    }
+    cout &lt;&lt; dp[m] &lt;&lt; endl;
+    <span class="pl-k">return</span> <span class="pl-c1">0</span>;
+}</pre></div>
+<blockquote>
+<p><strong>空间复杂度</strong>：在滚动数组 $O(m)$ 的基础上，物品数据也从 $O(\text{总物品数})$ 降到了 $O(\max \text{组内物品数})$，每组处理完即释放。这种写法在实际刷题中非常常用，因为大多数题目都是在线评测、给出完整数据的场景。</p>
+</blockquote>
+<blockquote>
+<p><strong>关于"不取该组"的疑问</strong>：有人会担心这样写没有显式处理"该组一个都不选"的情况。实际上，<code class="notranslate">dp[j]</code> 在进入容量循环时的值来自<strong>上一组的结果</strong>，本身就代表"不选当前组的任何物品"。每次 <code class="notranslate">dp[j] = max(dp[j], ...)</code> 都是拿"不选"去和"选某个物品"比较，所以"不取"天然被覆盖了。这也是为什么朴素算法中要写 <code class="notranslate">dp[i][j] = dp[i-1][j]</code> 作为初值——一维版本里这行对应的就是 <code class="notranslate">dp[j]</code> 不做任何修改。</p>
+</blockquote>
+<hr>
+<h2>四种背包对比总结</h2>
+<markdown-accessiblity-table><table role="table">
+<thead>
+<tr>
+<th>背包类型</th>
+<th>物品限制</th>
+<th>遍历顺序</th>
+<th>核心特征</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>01背包</strong></td>
+<td>每种1件</td>
+<td>容量 <strong>倒序</strong></td>
+<td><code class="notranslate">dp[j] = max(dp[j], dp[j-w] + v)</code> 倒序</td>
+</tr>
+<tr>
+<td><strong>完全背包</strong></td>
+<td>每种无限件</td>
+<td>容量 <strong>顺序</strong></td>
+<td><code class="notranslate">dp[j] = max(dp[j], dp[j-w] + v)</code> 顺序</td>
+</tr>
+<tr>
+<td><strong>多重背包</strong></td>
+<td>每种有限件</td>
+<td>容量 <strong>倒序</strong> + 二进制拆分</td>
+<td>拆成01背包后用倒序</td>
+</tr>
+<tr>
+<td><strong>分组背包</strong></td>
+<td>每组最多选1件</td>
+<td>组 → 容量<strong>倒序</strong> → 组内物品</td>
+<td>三层循环，组内物品在最内层</td>
+</tr>
+</tbody>
+</table></markdown-accessiblity-table>
+<blockquote>
+<p><strong>记忆诀窍</strong>：只选一次 → 倒序；可以重复选 → 顺序。分组背包本质上也是"每组只选一次"，所以容量也要倒序。</p>
+</blockquote>
+<hr>
+<h2>常见变体与技巧</h2>
+<h3>1. 恰好装满</h3>
+<p>若要求<strong>恰好装满</strong>背包，只需将 <code class="notranslate">dp[0]</code> 初始化为 <code class="notranslate">0</code>，其余 <code class="notranslate">dp[i]</code> 初始化为 <code class="notranslate">-∞</code>。这样只有恰好装满的状态才会被更新为正数。</p>
+<h3>2. 求方案数</h3>
+<p>将 <code class="notranslate">max</code> 改为求和，<code class="notranslate">dp[j] = dp[j] + dp[j - w[i]]</code>，<code class="notranslate">dp[0] = 1</code>。</p>
+<h3>3. 求具体方案</h3>
+<p>额外维护一个 <code class="notranslate">path</code> 数组记录每个状态由哪个物品转移而来，最后从 <code class="notranslate">dp[m]</code> 回溯即可。</p></div>
 <div style="font-size:small;margin-top:8px;float:right;"></div>
 
 <button class="btn btn-block" type="button" onclick="openComments()" id="cmButton">评论</button>
@@ -343,6 +530,6 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 </script>
-
+<script>MathJax = {tex: {inlineMath: [["$", "$"]]}};</script><script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 
 </html>
