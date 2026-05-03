@@ -11,10 +11,10 @@
         document.documentElement.setAttribute("data-color-mode", theme);
     </script>
 <meta name="description" content="# 线段树
-线段树是一种常见的可以对区间进行动态查询和修改的数据结构。">
+线段是是一种二叉树，用于高效动态的维护数组的区间信息（最值，和，gcd等），可以以O(logn)的复杂度进行单点/区间的修改与查询。">
 <meta property="og:title" content="线段树">
 <meta property="og:description" content="# 线段树
-线段树是一种常见的可以对区间进行动态查询和修改的数据结构。">
+线段是是一种二叉树，用于高效动态的维护数组的区间信息（最值，和，gcd等），可以以O(logn)的复杂度进行单点/区间的修改与查询。">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://terryji-lab.github.io/tianruiji-lab.github.io/post/xian-duan-shu.html">
 <meta property="og:image" content="https://avatars.githubusercontent.com/u/234720569?u=3be9bef1109cc9421ddb007b48de981393a8ccdc&v=4&size=512">
@@ -86,43 +86,175 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 </div>
     <div id="content">
 <div class="markdown-body" id="postBody"><h1>线段树</h1>
-<p>线段树是一种常见的可以对区间进行动态查询和修改的数据结构。使用分而治之的思想实现，把整个数组划分为多个区间，每个区间再划分成更多小区间，最后形成一个树状结构。</p>
-<h2>准备工作</h2>
-<p>我们创建结构体作为树的节点，保存该节点的左右区间范围，区间数值总和还有lazy标记。</p>
-<div class="highlight highlight-source-c++"><pre class="notranslate"><span class="pl-k">struct</span> <span class="pl-en">node</span>
+<p>线段是是一种二叉树，用于高效动态的维护数组的区间信息（最值，和，gcd等），可以以O(logn)的复杂度进行单点/区间的修改与查询。</p>
+<h2>数据结构</h2>
+<div class="highlight highlight-source-c++"><pre class="notranslate"><span class="pl-k">struct</span> <span class="pl-en">node</span> 
 {
-    <span class="pl-k">int</span> l,r,sum,lazy;
-}tr[<span class="pl-c1">4</span>*N];</pre></div>
-<h2>pushup操作</h2>
-<p>pushup指我们对小的区间进行修改后的反向传播操作，可以对已修改的子区间的父区间进行更新。代码如下：</p>
-<div class="highlight highlight-source-c++"><pre class="notranslate"><span class="pl-k">void</span> <span class="pl-en">pushup</span>(<span class="pl-k">int</span> p)
+    <span class="pl-k">int</span> l, r;        <span class="pl-c"><span class="pl-c">//</span> 当前节点管理的区间 [l, r]</span>
+    <span class="pl-k">int</span> lazy;        <span class="pl-c"><span class="pl-c">//</span> 懒惰标记（本节点已更新，但子节点还未下传的加法值）</span>
+    <span class="pl-k">int</span> sum;         <span class="pl-c"><span class="pl-c">//</span> 区间的总和</span>
+} tr[<span class="pl-c1">4</span> * N];         <span class="pl-c"><span class="pl-c">//</span> 开 4 倍数组大小</span>
+<span class="pl-k">int</span> w[N];            <span class="pl-c"><span class="pl-c">//</span> 原始数组</span></pre></div>
+<h2>函数</h2>
+<h3>左右子节点编号</h3>
+<p>使用数组来存储树，那么一个节点<code class="notranslate">p</code>的左儿子下标为<code class="notranslate">2*p</code>，右儿子下标为<code class="notranslate">2*p+1</code>。</p>
+<div class="highlight highlight-source-c++"><pre class="notranslate"><span class="pl-k">int</span> <span class="pl-en">lc</span>(<span class="pl-k">int</span> p) { <span class="pl-k">return</span> p * <span class="pl-c1">2</span>; }      <span class="pl-c"><span class="pl-c">//</span> left child</span>
+<span class="pl-k">int</span> <span class="pl-en">rc</span>(<span class="pl-k">int</span> p) { <span class="pl-k">return</span> p * <span class="pl-c1">2</span> + <span class="pl-c1">1</span>; }  <span class="pl-c"><span class="pl-c">//</span> right child</span></pre></div>
+<h3>pushup向上更新</h3>
+<div class="highlight highlight-source-c++"><pre class="notranslate"><span class="pl-k">void</span> <span class="pl-en">pushup</span>(<span class="pl-k">int</span> p) 
 {
-    tr[p].<span class="pl-smi">sum</span>=tr[p*<span class="pl-c1">2</span>].<span class="pl-smi">sum</span>+tr[p*<span class="pl-c1">2</span>+<span class="pl-c1">1</span>].<span class="pl-smi">sum</span>;
+    tr[p].<span class="pl-smi">sum</span> = tr[<span class="pl-c1">lc</span>(p)].<span class="pl-smi">sum</span> + tr[<span class="pl-c1">rc</span>(p)].<span class="pl-smi">sum</span>;
 }</pre></div>
-<h2>pushdown操作</h2>
-<p>当我们对一个区间进行分割递归之前要先用pushdown操作把lazy标记正向传播下去，对区间进行修改。代码如下：</p>
-<div class="highlight highlight-source-c++"><pre class="notranslate"><span class="pl-k">void</span> <span class="pl-en">pushdown</span>(<span class="pl-k">int</span> p)
+<p>当左右儿子更新后，用它们的 <code class="notranslate">sum</code> 更新当前节点的 <code class="notranslate">sum</code>。<strong>在修改或建树回溯时调用</strong>。</p>
+<h3>pushdown下传懒标记</h3>
+<div class="highlight highlight-source-c++"><pre class="notranslate"><span class="pl-k">void</span> <span class="pl-en">pushdown</span>(<span class="pl-k">int</span> p) 
 {
-    <span class="pl-k">if</span>(tr[p].<span class="pl-smi">lazy</span>)
-    {
-        tr[p*<span class="pl-c1">2</span>].<span class="pl-smi">sum</span>+=tr[p].<span class="pl-smi">lazy</span>*(tr[p*<span class="pl-c1">2</span>].<span class="pl-smi">r</span>-tr[p*<span class="pl-c1">2</span>].<span class="pl-smi">l</span>+<span class="pl-c1">1</span>);
-        tr[p*<span class="pl-c1">2</span>+<span class="pl-c1">1</span>].<span class="pl-smi">sum</span>+=tr[p].<span class="pl-smi">lazy</span>*(tr[p*<span class="pl-c1">2</span>+<span class="pl-c1">1</span>].<span class="pl-smi">r</span>-tr[p*<span class="pl-c1">2</span>+<span class="pl-c1">1</span>].<span class="pl-smi">l</span>+<span class="pl-c1">1</span>);
-        tr[p*<span class="pl-c1">2</span>].<span class="pl-smi">lazy</span>+=tr[p].<span class="pl-smi">lazy</span>;
-        tr[p*<span class="pl-c1">2</span>+<span class="pl-c1">1</span>].<span class="pl-smi">lazy</span>+=tr[p].<span class="pl-smi">lazy</span>;
-        tr[p].<span class="pl-smi">lazy</span>=<span class="pl-c1">0</span>;
+    <span class="pl-k">if</span> (tr[p].<span class="pl-smi">lazy</span>) {
+        tr[<span class="pl-c1">lc</span>(p)].<span class="pl-smi">sum</span> += tr[p].<span class="pl-smi">lazy</span> * (tr[<span class="pl-c1">lc</span>(p)].<span class="pl-smi">r</span> - tr[<span class="pl-c1">lc</span>(p)].<span class="pl-smi">l</span> + <span class="pl-c1">1</span>);
+        tr[<span class="pl-c1">rc</span>(p)].<span class="pl-smi">sum</span> += tr[p].<span class="pl-smi">lazy</span> * (tr[<span class="pl-c1">rc</span>(p)].<span class="pl-smi">r</span> - tr[<span class="pl-c1">rc</span>(p)].<span class="pl-smi">l</span> + <span class="pl-c1">1</span>);
+        tr[<span class="pl-c1">lc</span>(p)].<span class="pl-smi">lazy</span> += tr[p].<span class="pl-smi">lazy</span>;
+        tr[<span class="pl-c1">rc</span>(p)].<span class="pl-smi">lazy</span> += tr[p].<span class="pl-smi">lazy</span>;
+        tr[p].<span class="pl-smi">lazy</span> = <span class="pl-c1">0</span>;
     }
 }</pre></div>
-<h2>build操作</h2>
-<p>建树操作，使用递归实现，代码如下：</p>
-<div class="highlight highlight-source-c++"><pre class="notranslate"><span class="pl-k">void</span> <span class="pl-en">build</span>(<span class="pl-k">int</span> p,<span class="pl-k">int</span> l,<span class="pl-k">int</span> r)
+<ul>
+<li>将当前节点的懒标记下推到左右儿子。</li>
+<li>更新儿子的 <code class="notranslate">sum</code>（懒标记值 × 儿子区间长度）。</li>
+<li>累加儿子的 <code class="notranslate">lazy</code>。</li>
+<li>清空当前节点的 l<code class="notranslate">azy</code>。<br>
+<strong>在访问子节点之前（比如更新或查询递归进入下一层时）就需要调用这个函数</strong>。</li>
+</ul>
+<h3>build建树</h3>
+<div class="highlight highlight-source-c++"><pre class="notranslate"><span class="pl-k">void</span> <span class="pl-en">build</span>(<span class="pl-k">int</span> p, <span class="pl-k">int</span> l, <span class="pl-k">int</span> r) 
 {
-    tr[p]={l,r,w[l]};
-    <span class="pl-k">if</span>(l==r)<span class="pl-k">return</span>;
-    <span class="pl-k">int</span> m=(l+r)/<span class="pl-c1">2</span>;
-    <span class="pl-c1">build</span>(p*<span class="pl-c1">2</span>,l,m);
-    <span class="pl-c1">build</span>(p*<span class="pl-c1">2</span>+<span class="pl-c1">1</span>,m+<span class="pl-c1">1</span>,r);
+    tr[p].<span class="pl-smi">l</span> = l;
+    tr[p].<span class="pl-smi">r</span> = r;
+    tr[p].<span class="pl-smi">sum</span> = w[l];          <span class="pl-c"><span class="pl-c">//</span> 先初始化，叶子节点值确定后再 pushup 会修正非叶子节点</span>
+    <span class="pl-k">if</span> (l == r) <span class="pl-k">return</span>;       <span class="pl-c"><span class="pl-c">//</span> 叶子节点直接返回</span>
+    <span class="pl-k">int</span> m = (l + r) / <span class="pl-c1">2</span>;
+    <span class="pl-c1">build</span>(<span class="pl-c1">lc</span>(p), l, m);
+    <span class="pl-c1">build</span>(<span class="pl-c1">rc</span>(p), m + <span class="pl-c1">1</span>, r);
     <span class="pl-c1">pushup</span>(p);
-}</pre></div></div>
+}</pre></div>
+<p>先递归到叶子节点赋上原数组的值，然后所有非叶子节点都会调用<code class="notranslate">pushup</code>反向传播合成自己的值。</p>
+<h3>update区间修改</h3>
+<div class="highlight highlight-source-c++"><pre class="notranslate"><span class="pl-k">void</span> <span class="pl-en">update</span>(<span class="pl-k">int</span> p, <span class="pl-k">int</span> x, <span class="pl-k">int</span> y, <span class="pl-k">int</span> k) 
+{
+    <span class="pl-c"><span class="pl-c">//</span> 当前区间完全在目标区间内 → 直接更新并打懒标记</span>
+    <span class="pl-k">if</span> (tr[p].<span class="pl-smi">l</span> &gt;= x &amp;&amp; tr[p].<span class="pl-smi">r</span> &lt;= y) {
+        tr[p].<span class="pl-smi">sum</span> += k * (tr[p].<span class="pl-smi">r</span> - tr[p].<span class="pl-smi">l</span> + <span class="pl-c1">1</span>);
+        tr[p].<span class="pl-smi">lazy</span> += k;
+        <span class="pl-k">return</span>;
+    }
+    <span class="pl-k">int</span> m = (tr[p].<span class="pl-smi">l</span> + tr[p].<span class="pl-smi">r</span>) / <span class="pl-c1">2</span>;
+    <span class="pl-c1">pushdown</span>(p);                          <span class="pl-c"><span class="pl-c">//</span> 下传旧标记，确保儿子信息正确</span>
+    <span class="pl-k">if</span> (x &lt;= m) <span class="pl-c1">update</span>(<span class="pl-c1">lc</span>(p), x, y, k);   <span class="pl-c"><span class="pl-c">//</span> 左子区间有交集</span>
+    <span class="pl-k">if</span> (y &gt; m)  <span class="pl-c1">update</span>(<span class="pl-c1">rc</span>(p), x, y, k);   <span class="pl-c"><span class="pl-c">//</span> 右子区间有交集</span>
+    <span class="pl-c1">pushup</span>(p);                            <span class="pl-c"><span class="pl-c">//</span> 用儿子更新当前节点</span>
+}</pre></div>
+<ul>
+<li>当前区间 <code class="notranslate">[l,r]</code> 完全被 <code class="notranslate">[x,y]</code> 覆盖 → 直接加并打懒标记，结束。</li>
+<li>否则，先 <code class="notranslate">pushdown</code> 下传标记。</li>
+<li>递归处理左右有交集的部分。</li>
+<li>回溯时 <code class="notranslate">pushup</code> 维护准确性。</li>
+<li>同时也可以用于单点修改当参数中的<code class="notranslate">x==y</code>时</li>
+</ul>
+<h3>query区间查询</h3>
+<div class="highlight highlight-source-c++"><pre class="notranslate"><span class="pl-k">int</span> <span class="pl-en">query</span>(<span class="pl-k">int</span> p, <span class="pl-k">int</span> x, <span class="pl-k">int</span> y) 
+{
+    <span class="pl-k">if</span> (x &lt;= tr[p].<span class="pl-smi">l</span> &amp;&amp; y &gt;= tr[p].<span class="pl-smi">r</span>)       <span class="pl-c"><span class="pl-c">//</span> 当前区间完全包含在查询区间内</span>
+        <span class="pl-k">return</span> tr[p].<span class="pl-smi">sum</span>;
+    <span class="pl-k">int</span> m = (tr[p].<span class="pl-smi">l</span> + tr[p].<span class="pl-smi">r</span>) / <span class="pl-c1">2</span>;
+    <span class="pl-c1">pushdown</span>(p);                            <span class="pl-c"><span class="pl-c">//</span> 查询前也要下传标记</span>
+    <span class="pl-k">int</span> sum = <span class="pl-c1">0</span>;
+    <span class="pl-k">if</span> (x &lt;= m) sum += <span class="pl-c1">query</span>(<span class="pl-c1">lc</span>(p), x, y);
+    <span class="pl-k">if</span> (y &gt; m)  sum += <span class="pl-c1">query</span>(<span class="pl-c1">rc</span>(p), x, y);
+    <span class="pl-k">return</span> sum;
+}</pre></div>
+<p>查询同样遵循递归拆分区间，区间完全覆盖则直接返回 <code class="notranslate">sum</code>，否则 <code class="notranslate">pushdown</code> 后进入儿子。</p>
+<h2>完整代码</h2>
+<div class="highlight highlight-source-c++"><pre class="notranslate">#<span class="pl-k">include</span> <span class="pl-s"><span class="pl-pds">&lt;</span>bits/stdc++.h<span class="pl-pds">&gt;</span></span>
+#<span class="pl-k">define</span> <span class="pl-en">int</span> <span class="pl-k">long</span> <span class="pl-k">long</span>          <span class="pl-c"><span class="pl-c">//</span> 防止和 / 懒标记溢出</span>
+<span class="pl-k">using</span> <span class="pl-k">namespace</span> <span class="pl-en">std</span><span class="pl-k">;</span>
+
+<span class="pl-k">int</span> n, m;
+<span class="pl-k">const</span> <span class="pl-k">int</span> N = <span class="pl-c1">5e5</span> + <span class="pl-c1">5</span>;
+
+<span class="pl-k">struct</span> <span class="pl-en">node</span> {
+    <span class="pl-k">int</span> l, r, lazy, sum;
+} tr[<span class="pl-c1">4</span> * N];
+<span class="pl-k">int</span> w[N];
+
+<span class="pl-k">int</span> <span class="pl-en">lc</span>(<span class="pl-k">int</span> p) { <span class="pl-k">return</span> p * <span class="pl-c1">2</span>; }
+<span class="pl-k">int</span> <span class="pl-en">rc</span>(<span class="pl-k">int</span> p) { <span class="pl-k">return</span> p * <span class="pl-c1">2</span> + <span class="pl-c1">1</span>; }
+
+<span class="pl-k">void</span> <span class="pl-en">pushup</span>(<span class="pl-k">int</span> p) {
+    tr[p].<span class="pl-smi">sum</span> = tr[<span class="pl-c1">lc</span>(p)].<span class="pl-smi">sum</span> + tr[<span class="pl-c1">rc</span>(p)].<span class="pl-smi">sum</span>;
+}
+
+<span class="pl-k">void</span> <span class="pl-en">pushdown</span>(<span class="pl-k">int</span> p) {
+    <span class="pl-k">if</span> (tr[p].<span class="pl-smi">lazy</span>) {
+        tr[<span class="pl-c1">lc</span>(p)].<span class="pl-smi">sum</span> += tr[p].<span class="pl-smi">lazy</span> * (tr[<span class="pl-c1">lc</span>(p)].<span class="pl-smi">r</span> - tr[<span class="pl-c1">lc</span>(p)].<span class="pl-smi">l</span> + <span class="pl-c1">1</span>);
+        tr[<span class="pl-c1">rc</span>(p)].<span class="pl-smi">sum</span> += tr[p].<span class="pl-smi">lazy</span> * (tr[<span class="pl-c1">rc</span>(p)].<span class="pl-smi">r</span> - tr[<span class="pl-c1">rc</span>(p)].<span class="pl-smi">l</span> + <span class="pl-c1">1</span>);
+        tr[<span class="pl-c1">lc</span>(p)].<span class="pl-smi">lazy</span> += tr[p].<span class="pl-smi">lazy</span>;
+        tr[<span class="pl-c1">rc</span>(p)].<span class="pl-smi">lazy</span> += tr[p].<span class="pl-smi">lazy</span>;
+        tr[p].<span class="pl-smi">lazy</span> = <span class="pl-c1">0</span>;
+    }
+}
+
+<span class="pl-k">void</span> <span class="pl-en">build</span>(<span class="pl-k">int</span> p, <span class="pl-k">int</span> l, <span class="pl-k">int</span> r) {
+    tr[p].<span class="pl-smi">l</span> = l;
+    tr[p].<span class="pl-smi">r</span> = r;
+    tr[p].<span class="pl-smi">sum</span> = w[l];            <span class="pl-c"><span class="pl-c">//</span> 先赋初值，叶子节点会直接返回，非叶子被 pushup 覆盖</span>
+    <span class="pl-k">if</span> (l == r) <span class="pl-k">return</span>;
+    <span class="pl-k">int</span> m = (l + r) / <span class="pl-c1">2</span>;
+    <span class="pl-c1">build</span>(<span class="pl-c1">lc</span>(p), l, m);
+    <span class="pl-c1">build</span>(<span class="pl-c1">rc</span>(p), m + <span class="pl-c1">1</span>, r);
+    <span class="pl-c1">pushup</span>(p);
+}
+
+<span class="pl-k">void</span> <span class="pl-en">update</span>(<span class="pl-k">int</span> p, <span class="pl-k">int</span> x, <span class="pl-k">int</span> y, <span class="pl-k">int</span> k) {
+    <span class="pl-k">if</span> (tr[p].<span class="pl-smi">l</span> &gt;= x &amp;&amp; tr[p].<span class="pl-smi">r</span> &lt;= y) {
+        tr[p].<span class="pl-smi">sum</span> += k * (tr[p].<span class="pl-smi">r</span> - tr[p].<span class="pl-smi">l</span> + <span class="pl-c1">1</span>);
+        tr[p].<span class="pl-smi">lazy</span> += k;
+        <span class="pl-k">return</span>;
+    }
+    <span class="pl-k">int</span> m = (tr[p].<span class="pl-smi">l</span> + tr[p].<span class="pl-smi">r</span>) / <span class="pl-c1">2</span>;
+    <span class="pl-c1">pushdown</span>(p);
+    <span class="pl-k">if</span> (x &lt;= m) <span class="pl-c1">update</span>(<span class="pl-c1">lc</span>(p), x, y, k);
+    <span class="pl-k">if</span> (y &gt; m)  <span class="pl-c1">update</span>(<span class="pl-c1">rc</span>(p), x, y, k);
+    <span class="pl-c1">pushup</span>(p);
+}
+
+<span class="pl-k">int</span> <span class="pl-en">query</span>(<span class="pl-k">int</span> p, <span class="pl-k">int</span> x, <span class="pl-k">int</span> y) {
+    <span class="pl-k">if</span> (x &lt;= tr[p].<span class="pl-smi">l</span> &amp;&amp; y &gt;= tr[p].<span class="pl-smi">r</span>)
+        <span class="pl-k">return</span> tr[p].<span class="pl-smi">sum</span>;
+    <span class="pl-k">int</span> m = (tr[p].<span class="pl-smi">l</span> + tr[p].<span class="pl-smi">r</span>) / <span class="pl-c1">2</span>;
+    <span class="pl-c1">pushdown</span>(p);
+    <span class="pl-k">int</span> sum = <span class="pl-c1">0</span>;
+    <span class="pl-k">if</span> (x &lt;= m) sum += <span class="pl-c1">query</span>(<span class="pl-c1">lc</span>(p), x, y);
+    <span class="pl-k">if</span> (y &gt; m)  sum += <span class="pl-c1">query</span>(<span class="pl-c1">rc</span>(p), x, y);
+    <span class="pl-k">return</span> sum;
+}
+
+<span class="pl-k">signed</span> <span class="pl-en">main</span>() {
+    cin &gt;&gt; n &gt;&gt; m;
+    <span class="pl-k">for</span> (<span class="pl-k">int</span> i = <span class="pl-c1">1</span>; i &lt;= n; i++) cin &gt;&gt; w[i];
+    <span class="pl-c1">build</span>(<span class="pl-c1">1</span>, <span class="pl-c1">1</span>, n);
+    <span class="pl-k">while</span> (m--) {
+        <span class="pl-k">int</span> op, x, y, k;
+        cin &gt;&gt; op;
+        <span class="pl-k">if</span> (op == <span class="pl-c1">1</span>) {
+            cin &gt;&gt; x &gt;&gt; y &gt;&gt; k;
+            <span class="pl-c1">update</span>(<span class="pl-c1">1</span>, x, y, k);
+        } <span class="pl-k">else</span> {
+            cin &gt;&gt; x &gt;&gt; y;
+            cout &lt;&lt; <span class="pl-c1">query</span>(<span class="pl-c1">1</span>, x, y) &lt;&lt; <span class="pl-s"><span class="pl-pds">'</span><span class="pl-cce">\n</span><span class="pl-pds">'</span></span>;
+        }
+    }
+    <span class="pl-k">return</span> <span class="pl-c1">0</span>;
+}</pre></div>
+<p>线段树的难点在于懒惰标记的管理。<strong>记住一条原则：“用到儿子时，必先 pushdown”，并且回溯时及时 pushup，代码就不容易出错</strong>。</p></div>
 <div style="font-size:small;margin-top:8px;float:right;"></div>
 
 <button class="btn btn-block" type="button" onclick="openComments()" id="cmButton">评论</button>
