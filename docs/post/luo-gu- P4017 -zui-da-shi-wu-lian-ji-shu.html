@@ -166,7 +166,7 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 <h3>初始化</h3>
 <p>所有入度为<code class="notranslate">0</code>的节点<code class="notranslate">dp</code>值都为<code class="notranslate">1</code>。其余的节点的<code class="notranslate">dp</code>值都为<code class="notranslate">0</code>。</p>
 <h3>递推公式</h3>
-<p>如果<code class="notranslate">t</code>是<code class="notranslate">u</code>和<code class="notranslate">v</code>的食物，那么<code class="notranslate">dp[t]=dp[u]+dp[v]</code>，这很好理解，到达<code class="notranslate">u</code>的路径数加上到达<code class="notranslate">v</code>的路径数就是到达<code class="notranslate">t</code>的路径数了。最后答案是所有出度为<code class="notranslate">0</code>的节点<code class="notranslate">dp</code>之和。</p>
+<p>到达<code class="notranslate">t</code>的路径数就是到达捕食<code class="notranslate">t</code>的节点的路径数之和。最后答案是所有出度为<code class="notranslate">0</code>的节点<code class="notranslate">dp</code>之和。</p>
 <h3>代码</h3>
 <div class="highlight highlight-source-c++"><pre class="notranslate">#<span class="pl-k">include</span> <span class="pl-s"><span class="pl-pds">&lt;</span>bits/stdc++.h<span class="pl-pds">&gt;</span></span>
 <span class="pl-k">using</span> <span class="pl-k">namespace</span> <span class="pl-en">std</span><span class="pl-k">;</span>
