@@ -139,7 +139,20 @@ vector&lt;<span class="pl-k">int</span>&gt; e[N],tp;
     <span class="pl-k">if</span>(!<span class="pl-c1">toposort</span>())cout&lt;&lt;-<span class="pl-c1">1</span>;
     <span class="pl-k">else</span> <span class="pl-k">for</span>(<span class="pl-k">auto</span>&amp;x:tp)cout&lt;&lt;x&lt;&lt;<span class="pl-s"><span class="pl-pds">'</span> <span class="pl-pds">'</span></span>;
     <span class="pl-k">return</span> <span class="pl-c1">0</span>;
-}</pre></div></div>
+}</pre></div>
+<h2>染色法</h2>
+<p>如果是Kahn算法是基于Bfs的算法，那么染色算法就是基于Dfs的算法。这种算法我们不用保存入度，替代的是一个<code class="notranslate">c[x]</code>数组来保存当前<code class="notranslate">x</code>的颜色。算法的核心是如果存在拓扑序，每个节点都会经历<code class="notranslate">0 --&gt; -1--&gt; 1</code>三种颜色。</p>
+<ol>
+<li>初始状态，所有点染色为0</li>
+<li>枚举每个点，进入x点，把x点染色为-1。然后枚举x的儿子y，如果y的颜色是0，就进入y继续走</li>
+<li>如果枚举完x的儿子，没发现环，就把x染色为1，并把x压入tp数组</li>
+<li>如果发现在递归过程中儿子节点的颜色为-1，则说明回到了祖先节点，发现了环，返回false退出程序。</li>
+</ol>
+<ul>
+<li>0表示未被访问</li>
+<li>-1表示正在被访问</li>
+<li>1表示访问完毕</li>
+</ul></div>
 <div style="font-size:small;margin-top:8px;float:right;"></div>
 
 <button class="btn btn-block" type="button" onclick="openComments()" id="cmButton">评论</button>
