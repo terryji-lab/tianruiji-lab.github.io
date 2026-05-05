@@ -152,7 +152,57 @@ vector&lt;<span class="pl-k">int</span>&gt; e[N],tp;
 <li>0表示未被访问</li>
 <li>-1表示正在被访问</li>
 <li>1表示访问完毕</li>
-</ul></div>
+</ul>
+<p>这样做出来是从儿子节点push进tp的，所以要倒序输出才是正向拓扑序。<br>
+代码如下：</p>
+<div class="highlight highlight-source-c++"><pre class="notranslate">#<span class="pl-k">include</span> <span class="pl-s"><span class="pl-pds">&lt;</span>bits/stdc++.h<span class="pl-pds">&gt;</span></span>
+<span class="pl-k">using</span> <span class="pl-k">namespace</span> <span class="pl-en">std</span><span class="pl-k">;</span>
+<span class="pl-k">const</span> <span class="pl-k">int</span> N=<span class="pl-c1">100</span>;
+vector&lt;<span class="pl-k">int</span>&gt; tp;
+vector&lt;<span class="pl-k">int</span>&gt; e[N];
+<span class="pl-k">int</span> c[N];
+<span class="pl-k">int</span> n,m;
+<span class="pl-k">bool</span> <span class="pl-en">dfs</span>(<span class="pl-k">int</span> x)
+{
+    c[x]=-<span class="pl-c1">1</span>;<span class="pl-c"><span class="pl-c">//</span>染色为-1</span>
+    <span class="pl-k">for</span>(<span class="pl-k">auto</span>&amp;y:e[x])<span class="pl-c"><span class="pl-c">//</span>枚举儿子节点</span>
+    {
+        <span class="pl-k">if</span>(c[y]==-<span class="pl-c1">1</span>)<span class="pl-k">return</span> <span class="pl-c1">false</span>;<span class="pl-c"><span class="pl-c">//</span>如果有正在访问中的点说明有环</span>
+        <span class="pl-k">else</span> <span class="pl-k">if</span>(!c[y])
+        {
+            <span class="pl-k">if</span>(!<span class="pl-c1">dfs</span>(y))<span class="pl-k">return</span> <span class="pl-c1">false</span>;<span class="pl-c"><span class="pl-c">//</span>如果递归搜索子节点遇到环也返回false</span>
+        }
+    }
+    c[x]=<span class="pl-c1">1</span>;<span class="pl-c"><span class="pl-c">//</span>染色为1</span>
+    tp.<span class="pl-c1">push_back</span>(x);<span class="pl-c"><span class="pl-c">//</span>加入序列</span>
+    <span class="pl-k">return</span> <span class="pl-c1">true</span>;
+}
+<span class="pl-k">bool</span> <span class="pl-en">toposort</span>()
+{
+    <span class="pl-c1">memset</span>(c,<span class="pl-c1">0</span>,<span class="pl-k">sizeof</span>(c));<span class="pl-c"><span class="pl-c">//</span>初始染色为0</span>
+    <span class="pl-k">for</span>(<span class="pl-k">int</span> i=<span class="pl-c1">1</span>;i&lt;=n;i++)<span class="pl-c"><span class="pl-c">//</span>枚举每一个节点</span>
+    {
+        <span class="pl-k">if</span>(!c[i])<span class="pl-c"><span class="pl-c">//</span>如果是0就进行访问</span>
+        {
+            <span class="pl-k">if</span>(!<span class="pl-c1">dfs</span>(i))<span class="pl-k">return</span> <span class="pl-c1">false</span>;<span class="pl-c"><span class="pl-c">//</span>存在环直接返回false</span>
+        }
+    }
+    <span class="pl-c1">reverse</span>(tp.<span class="pl-c1">begin</span>(),tp.<span class="pl-c1">end</span>());<span class="pl-c"><span class="pl-c">//</span>反转顺序</span>
+    <span class="pl-k">return</span> <span class="pl-c1">true</span>;
+}
+<span class="pl-k">int</span> <span class="pl-en">main</span>()
+{
+    cin&gt;&gt;n&gt;&gt;m;
+    <span class="pl-k">for</span>(<span class="pl-k">int</span> i=<span class="pl-c1">1</span>;i&lt;=m;i++)
+    {
+        <span class="pl-k">int</span> u,v;
+        cin&gt;&gt;u&gt;&gt;v;
+        e[u].<span class="pl-c1">push_back</span>(v);
+    }
+    <span class="pl-k">if</span>(!<span class="pl-c1">toposort</span>())cout&lt;&lt;-<span class="pl-c1">1</span>;
+    <span class="pl-k">else</span> <span class="pl-k">for</span>(<span class="pl-k">auto</span>&amp;ele:tp)cout&lt;&lt;ele&lt;&lt;<span class="pl-s"><span class="pl-pds">'</span> <span class="pl-pds">'</span></span>;
+    <span class="pl-k">return</span> <span class="pl-c1">0</span>;
+}</pre></div></div>
 <div style="font-size:small;margin-top:8px;float:right;"></div>
 
 <button class="btn btn-block" type="button" onclick="openComments()" id="cmButton">评论</button>
