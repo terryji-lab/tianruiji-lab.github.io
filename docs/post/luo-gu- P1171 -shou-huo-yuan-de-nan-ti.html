@@ -33,7 +33,7 @@
 <meta property="og:url" content="https://terryji-lab.github.io/tianruiji-lab.github.io/post/luo-gu-%20P1171%20-shou-huo-yuan-de-nan-ti.html">
 <meta property="og:image" content="https://avatars.githubusercontent.com/u/234720569?u=3be9bef1109cc9421ddb007b48de981393a8ccdc&v=4&size=512">
 <title>洛谷 P1171 售货员的难题</title>
-
+<link href="//unpkg.com/@wooorm/starry-night@2.1.1/style/both.css" rel="stylesheet" />
 
 
 </head>
@@ -208,7 +208,74 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 </table></markdown-accessiblity-table>
 <p>不过要注意的的是有些时候我们的数并不是从二进制第一位开始的，而是从第0位开始的，很多时候操作的不是<code class="notranslate">i</code>，而是<code class="notranslate">i-1</code>。</p>
 <h3>分析</h3>
-<p>下面回到这道题目，我们使用一个二维dp数组<code class="notranslate">dp[mask][i]</code>来保存状态，<code class="notranslate">mask</code>保存状态是当前已经到达过加入集合的节点为<code class="notranslate">1</code>，没有到达过的节点为<code class="notranslate">0</code>，<code class="notranslate">dp[mask][i]</code>表示在<code class="notranslate">mask</code>的情况下到达<code class="notranslate">i</code>所需要的最短距离。</p></div>
+<h4>dp数组含义</h4>
+<p>我们使用二维数组<code class="notranslate">dp[mask][i]</code>来存储状态，表示当状态为<code class="notranslate">mask</code>并且最后在<code class="notranslate">i</code>点上时，走的最短距离。</p>
+<h3>初始化</h3>
+<p>因为刚开始就在<code class="notranslate">1</code>号点，所以直接初始化<code class="notranslate">dp[1][1]=0</code>，这里的<code class="notranslate">1</code>其实是<code class="notranslate">00001</code>，表示只有<code class="notranslate">1</code>号点已经访问。其余的值全部初始化为无穷大方便后续进行状态转移。</p>
+<h3>递推公式</h3>
+<p>首先枚举当前情况下的压缩状态，我们从<code class="notranslate">00001</code>开始递推，所以就从这个点开始一个一个点的加入状态，其实也就是顺序枚举，然后枚举已经在压缩状态中的点作为出发点，最后枚举不在压缩状态中的点作为终点，计算距离并且加入压缩状态。</p>
+<div class="highlight highlight-source-c++"><pre class="notranslate">    <span class="pl-k">for</span>(<span class="pl-k">int</span> mask=<span class="pl-c1">1</span>;mask&lt;(<span class="pl-c1">1</span>&lt;&lt;n);mask++)
+    {
+        <span class="pl-k">if</span>(!(mask&amp;<span class="pl-c1">1</span>))<span class="pl-k">continue</span>;
+        <span class="pl-k">for</span>(<span class="pl-k">int</span> i=<span class="pl-c1">1</span>;i&lt;=n;i++)
+        {
+            <span class="pl-k">if</span>(!(mask&amp;(<span class="pl-c1">1</span>&lt;&lt;(i-<span class="pl-c1">1</span>))))<span class="pl-k">continue</span>;
+            <span class="pl-k">for</span>(<span class="pl-k">int</span> j=<span class="pl-c1">1</span>;j&lt;=n;j++)
+            {
+                <span class="pl-k">if</span>(mask&amp;(<span class="pl-c1">1</span>&lt;&lt;(j-<span class="pl-c1">1</span>)))<span class="pl-k">continue</span>;
+                dp[mask | (<span class="pl-c1">1</span>&lt;&lt;(j-<span class="pl-c1">1</span>))][j]=<span class="pl-c1">min</span>(dp[mask | (<span class="pl-c1">1</span>&lt;&lt;(j-<span class="pl-c1">1</span>))][j],dp[mask][i]+grid[i][j]);<span class="pl-c"><span class="pl-c">//</span>加上从i到j的距离</span>
+            }
+        }
+    }</pre></div>
+<p>很简单，我们从<code class="notranslate">00001</code>推出了<code class="notranslate">00011</code>，之后由<code class="notranslate">00011</code>推出了<code class="notranslate">00111</code>，保证了当前状态用来推下一个状态之前已经被推导了。中间如果存在<code class="notranslate">1</code>号点不在压缩状态中的情况直接跳过。因为起点就是<code class="notranslate">1</code>，起点肯定在压缩状态中。我们最后维护的dp数组保存的一定是在每个压缩状态<code class="notranslate">mask</code>下，最后一步到达的点是<code class="notranslate">i</code>时所经过的距离，不用考虑中间是怎么走的。<br>
+答案就是当所有点都已经走过了，<code class="notranslate">mask</code>为<code class="notranslate">11111</code>时的距离加上从最后落脚点出发回到起点的距离。<br>
+代码如下：</p>
+<div class="highlight highlight-source-c++"><pre class="notranslate">#<span class="pl-k">include</span> <span class="pl-s"><span class="pl-pds">&lt;</span>bits/stdc++.h<span class="pl-pds">&gt;</span></span>
+<span class="pl-k">using</span> <span class="pl-k">namespace</span> <span class="pl-en">std</span><span class="pl-k">;</span>
+<span class="pl-k">const</span> <span class="pl-k">int</span> N=<span class="pl-c1">25</span>;
+<span class="pl-k">int</span> grid[N][N];
+<span class="pl-k">int</span> dp[<span class="pl-c1">1</span>&lt;&lt;<span class="pl-c1">20</span>][N];<span class="pl-c"><span class="pl-c">//</span>最多有20个节点</span>
+<span class="pl-k">const</span> <span class="pl-k">int</span> INF=<span class="pl-c1">1e9</span>;
+<span class="pl-k">int</span> n;
+<span class="pl-k">int</span> <span class="pl-en">main</span>()
+{
+    cin&gt;&gt;n;
+    <span class="pl-k">for</span>(<span class="pl-k">int</span> i=<span class="pl-c1">1</span>;i&lt;=n;i++)
+    {
+        <span class="pl-k">for</span>(<span class="pl-k">int</span> j=<span class="pl-c1">1</span>;j&lt;=n;j++)
+        {
+            cin&gt;&gt;grid[i][j];<span class="pl-c"><span class="pl-c">//</span>密集图，使用邻接矩阵存图</span>
+        }
+    }
+    <span class="pl-k">for</span>(<span class="pl-k">int</span> i=<span class="pl-c1">0</span>;i&lt;(<span class="pl-c1">1</span>&lt;&lt;n);i++)
+    {
+        <span class="pl-k">for</span>(<span class="pl-k">int</span> j=<span class="pl-c1">1</span>;j&lt;=n;j++)
+        {
+            dp[i][j]=INF;
+        }
+    }
+    dp[<span class="pl-c1">1</span>][<span class="pl-c1">1</span>]=<span class="pl-c1">0</span>;<span class="pl-c"><span class="pl-c">//</span>初始化</span>
+    <span class="pl-k">for</span>(<span class="pl-k">int</span> mask=<span class="pl-c1">1</span>;mask&lt;(<span class="pl-c1">1</span>&lt;&lt;n);mask++)<span class="pl-c"><span class="pl-c">//</span>枚举压缩状态</span>
+    {
+        <span class="pl-k">if</span>(!(mask&amp;<span class="pl-c1">1</span>))<span class="pl-k">continue</span>;<span class="pl-c"><span class="pl-c">//</span>1不在状态中就直接跳过</span>
+        <span class="pl-k">for</span>(<span class="pl-k">int</span> i=<span class="pl-c1">1</span>;i&lt;=n;i++)<span class="pl-c"><span class="pl-c">//</span>枚举出发点</span>
+        {
+            <span class="pl-k">if</span>(!(mask&amp;(<span class="pl-c1">1</span>&lt;&lt;(i-<span class="pl-c1">1</span>))))<span class="pl-k">continue</span>;<span class="pl-c"><span class="pl-c">//</span>如果出发点不在压缩状态中跳过</span>
+            <span class="pl-k">for</span>(<span class="pl-k">int</span> j=<span class="pl-c1">1</span>;j&lt;=n;j++)<span class="pl-c"><span class="pl-c">//</span>枚举终点</span>
+            {
+                <span class="pl-k">if</span>(mask&amp;(<span class="pl-c1">1</span>&lt;&lt;(j-<span class="pl-c1">1</span>)))<span class="pl-k">continue</span>;<span class="pl-c"><span class="pl-c">//</span>如果终点已经在枚举状态中跳过</span>
+                dp[mask | (<span class="pl-c1">1</span>&lt;&lt;(j-<span class="pl-c1">1</span>))][j]=<span class="pl-c1">min</span>(dp[mask | (<span class="pl-c1">1</span>&lt;&lt;(j-<span class="pl-c1">1</span>))][j],dp[mask][i]+grid[i][j]);<span class="pl-c"><span class="pl-c">//</span>状态转移，mask | (1&lt;&lt;(j-1))是j加入压缩状态后新的压缩状态</span>
+            }
+        }
+    }
+    <span class="pl-k">int</span> ans=INF;
+    <span class="pl-k">for</span>(<span class="pl-k">int</span> i=<span class="pl-c1">1</span>;i&lt;=n;i++)
+    {
+        ans=<span class="pl-c1">min</span>(ans,dp[(<span class="pl-c1">1</span>&lt;&lt;n)-<span class="pl-c1">1</span>][i]+grid[i][<span class="pl-c1">1</span>]);<span class="pl-c"><span class="pl-c">//</span>枚举出发点，找答案</span>
+    }
+    cout&lt;&lt;ans;
+    <span class="pl-k">return</span> <span class="pl-c1">0</span>;
+}</pre></div></div>
 <div style="font-size:small;margin-top:8px;float:right;"></div>
 
 <button class="btn btn-block" type="button" onclick="openComments()" id="cmButton">评论</button>
