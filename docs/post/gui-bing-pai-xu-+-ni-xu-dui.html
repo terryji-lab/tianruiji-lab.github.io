@@ -116,6 +116,64 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
     <span class="pl-c1">msort</span>(<span class="pl-c1">1</span>,n);
     <span class="pl-k">for</span>(<span class="pl-k">int</span> i=<span class="pl-c1">1</span>;i&lt;=n;i++)cout&lt;&lt;a[i]&lt;&lt;<span class="pl-s"><span class="pl-pds">'</span> <span class="pl-pds">'</span></span>;
     <span class="pl-k">return</span> <span class="pl-c1">0</span>;
+}</pre></div>
+<h2>逆序对</h2>
+<p>下面附上一道归并排序的例题，进一步加深理解，并且告诉你不是只用<code class="notranslate">sort</code>就可以了，别的排序还是有用处的。</p>
+<h1>P1908 逆序对</h1>
+<h2>题目描述</h2>
+<p>猫猫 TOM 和小老鼠 JERRY 最近又较量上了，但是毕竟都是成年人，他们已经不喜欢再玩那种你追我赶的游戏，现在他们喜欢玩统计。</p>
+<p>最近，TOM 老猫查阅到一个人类称之为“逆序对”的东西，这东西是这样定义的：对于给定的一段正整数序列，逆序对就是序列中 $a_i&amp;gt;a_j$ 且 $i&amp;lt;j$ 的有序对。知道这概念后，他们就比赛谁先算出给定的一段正整数序列中逆序对的数目。注意序列中可能有重复数字。</p>
+<p><strong>Update：数据已加强。</strong></p>
+<h2>输入格式</h2>
+<p>第一行，一个数 $n$，表示序列中有 $n$ 个数。</p>
+<p>第二行 $n$ 个数，表示给定的序列。序列中每个数字不超过 $10^9$。</p>
+<h2>输出格式</h2>
+<p>输出序列中逆序对的数目。</p>
+<h2>输入输出样例 #1</h2>
+<h3>输入 #1</h3>
+<pre class="notranslate"><code class="notranslate">6
+5 4 2 6 3 1
+
+</code></pre>
+<h3>输出 #1</h3>
+<pre class="notranslate"><code class="notranslate">11
+</code></pre>
+<h2>说明/提示</h2>
+<p>对于 $25%$ 的数据， $n \leq 2500$。</p>
+<p>对于 $50%$ 的数据， $n \leq 4 \times 10^4$。</p>
+<p>对于所有数据， $1 \leq n \leq 5 \times 10^5$。</p>
+<p>应该不会有人 $O(n^2)$ 过 50 万吧 —— 2018.8 chen_zhe。</p>
+<h3>分析</h3>
+<p>我们想一下有序区间合并的过程，如果选择左区间的元素那么就是正常的，但是如果选择右区间的元素就说明一定存在逆序对，我们只需要对归并排序的代码做一点小小的修改就可以解决这道题目了。代码如下：</p>
+<div class="highlight highlight-source-c++"><pre class="notranslate">#<span class="pl-k">include</span> <span class="pl-s"><span class="pl-pds">&lt;</span>bits/stdc++.h<span class="pl-pds">&gt;</span></span>
+#<span class="pl-k">define</span> <span class="pl-en">int</span> <span class="pl-k">long</span> <span class="pl-k">long</span><span class="pl-c"><span class="pl-c">//</span>记得开long long</span>
+<span class="pl-k">using</span> <span class="pl-k">namespace</span> <span class="pl-en">std</span><span class="pl-k">;</span>
+<span class="pl-k">const</span> <span class="pl-k">int</span> N=<span class="pl-c1">5e5</span>+<span class="pl-c1">5</span>;
+<span class="pl-k">int</span> a[N],b[N],n,ans;
+<span class="pl-k">void</span> <span class="pl-en">msort</span>(<span class="pl-k">int</span> l,<span class="pl-k">int</span> r)
+{
+    <span class="pl-k">if</span>(l==r)<span class="pl-k">return</span>;
+    <span class="pl-k">int</span> mid=l+r&gt;&gt;<span class="pl-c1">1</span>;
+    <span class="pl-c1">msort</span>(l,mid);
+    <span class="pl-c1">msort</span>(mid+<span class="pl-c1">1</span>,r);
+
+    <span class="pl-k">int</span> i=l,j=mid+<span class="pl-c1">1</span>,k=l;
+    <span class="pl-k">while</span>(i&lt;=mid &amp;&amp; j&lt;=r)
+    {
+        <span class="pl-k">if</span>(a[i]&lt;=a[j])b[k++]=a[i++];
+        <span class="pl-k">else</span> b[k++]=a[j++],ans+=(mid-i+<span class="pl-c1">1</span>);<span class="pl-c"><span class="pl-c">//</span>因为左区间是有序递增的，所以如果右区间当前数值小于左区间当前数值，就说明右区间当前数值与左区间所有剩余数组都组成逆序对</span>
+    }
+    <span class="pl-k">while</span>(i&lt;=mid)b[k++]=a[i++];
+    <span class="pl-k">while</span>(j&lt;=r)b[k++]=a[j++];
+    <span class="pl-k">for</span>(<span class="pl-k">int</span> i=l;i&lt;=r;i++)a[i]=b[i];
+}
+<span class="pl-k">signed</span> <span class="pl-en">main</span>()
+{
+    cin&gt;&gt;n;
+    <span class="pl-k">for</span>(<span class="pl-k">int</span> i=<span class="pl-c1">1</span>;i&lt;=n;i++)cin&gt;&gt;a[i];
+    <span class="pl-c1">msort</span>(<span class="pl-c1">1</span>,n);
+    cout&lt;&lt;ans;
+    <span class="pl-k">return</span> <span class="pl-c1">0</span>;
 }</pre></div></div>
 <div style="font-size:small;margin-top:8px;float:right;"></div>
 
@@ -281,6 +339,6 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 </script>
-
+<script>MathJax = {tex: {inlineMath: [["$", "$"]]}};</script><script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 
 </html>
