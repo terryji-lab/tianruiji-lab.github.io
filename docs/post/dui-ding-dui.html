@@ -11,10 +11,10 @@
         document.documentElement.setAttribute("data-color-mode", theme);
     </script>
 <meta name="description" content="# 对顶堆
-使用一个大根堆和一个小根堆来维护所有元素中第k大/小的元素。">
+使用一个大根堆和一个小根堆**动态维护**所有元素中第k大/小的元素。">
 <meta property="og:title" content="对顶堆">
 <meta property="og:description" content="# 对顶堆
-使用一个大根堆和一个小根堆来维护所有元素中第k大/小的元素。">
+使用一个大根堆和一个小根堆**动态维护**所有元素中第k大/小的元素。">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://terryji-lab.github.io/tianruiji-lab.github.io/post/dui-ding-dui.html">
 <meta property="og:image" content="https://avatars.githubusercontent.com/u/234720569?u=3be9bef1109cc9421ddb007b48de981393a8ccdc&v=4&size=512">
@@ -86,7 +86,7 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 </div>
     <div id="content">
 <div class="markdown-body" id="postBody"><h1>对顶堆</h1>
-<p>使用一个大根堆和一个小根堆来维护所有元素中第k大/小的元素。<br>
+<p>使用一个大根堆和一个小根堆<strong>动态维护</strong>所有元素中第k大/小的元素。<br>
 以找第k大的元素为例：<br>
 如果输入的数据大于小根堆的根或者小根堆为空，就插入小根堆，否则加入大根堆。因为如果插入数据还没有小根堆的根大，那么一定比小根堆的所有元素都要小。<strong>在输入过程中，如果小根堆的元素不足k个，就从大根堆转移最大的元素，也就是大根堆的根过去，如果超过k个元素，就把小根堆最小的元素，也就是小根堆的根转移到大根堆去，总之要维护小根堆在最后有k个元素，并且小根堆的根就是第k大的数</strong>。</p>
 <h2>代码</h2>
