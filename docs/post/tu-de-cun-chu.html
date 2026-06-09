@@ -114,7 +114,7 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 <div class="highlight highlight-source-c++"><pre class="notranslate">#<span class="pl-k">include</span> <span class="pl-s"><span class="pl-pds">&lt;</span>bits/stdc++.h<span class="pl-pds">&gt;</span></span>
 <span class="pl-k">using</span> <span class="pl-k">namespace</span> <span class="pl-en">std</span><span class="pl-k">;</span>
 <span class="pl-k">const</span> <span class="pl-k">int</span> N=<span class="pl-c1">50</span>;
-<span class="pl-k">const</span> <span class="pl-k">int</span> INF=<span class="pl-c1">1e9</span>;
+<span class="pl-k">const</span> <span class="pl-k">int</span> <span class="pl-c1">INF</span>=<span class="pl-c1">1e9</span>;
 <span class="pl-k">int</span> grid[N][N];
 <span class="pl-k">int</span> used[N];
 <span class="pl-k">int</span> n,m;
@@ -124,7 +124,7 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
     cout&lt;&lt;u&lt;&lt;endl;
     <span class="pl-k">for</span>(<span class="pl-k">int</span> i=<span class="pl-c1">1</span>;i&lt;=n;i++)
     {
-        <span class="pl-k">if</span>(grid[u][i]!=INF &amp;&amp; !used[i])<span class="pl-c1">dfs</span>(i);<span class="pl-c"><span class="pl-c">//</span>对相邻点递归调用dfs</span>
+        <span class="pl-k">if</span>(grid[u][i]!=<span class="pl-c1">INF</span> &amp;&amp; !used[i])<span class="pl-c1">dfs</span>(i);<span class="pl-c"><span class="pl-c">//</span>对相邻点递归调用dfs</span>
     }
 }
 <span class="pl-k">int</span> <span class="pl-en">main</span>()
@@ -133,7 +133,7 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
     {
         <span class="pl-k">for</span>(<span class="pl-k">int</span> j=<span class="pl-c1">1</span>;j&lt;=n;j++)
         {
-            grid[i][j]=INF;<span class="pl-c"><span class="pl-c">//</span>初始距离都是inf，不可达</span>
+            grid[i][j]=<span class="pl-c1">INF</span>;<span class="pl-c"><span class="pl-c">//</span>初始距离都是inf，不可达</span>
             <span class="pl-k">if</span>(i==j)grid[i][j]=<span class="pl-c1">0</span>;<span class="pl-c"><span class="pl-c">//</span>自己和自己的距离为0</span>
         }
     }

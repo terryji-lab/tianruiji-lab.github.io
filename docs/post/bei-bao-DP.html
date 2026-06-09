@@ -284,7 +284,7 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 <p>上面的写法仍然需要预先存储所有组的 <code class="notranslate">w[i][k]</code> 和 <code class="notranslate">v[i][k]</code>。实际上我们完全可以一边读入数据一边 DP——为每组物品开一个临时的 <code class="notranslate">w[]</code> 和 <code class="notranslate">v[]</code> 一维数组，读入该组后立刻处理，处理完就释放，这样连物品数据都不用存。</p>
 <h4>完整代码</h4>
 <div class="highlight highlight-source-c++"><pre class="notranslate"><span class="pl-c"><span class="pl-c">//</span> 全局只需要 dp[m+1] 一个数组</span>
-<span class="pl-k">int</span> dp[MAXM];
+<span class="pl-k">int</span> dp[<span class="pl-c1">MAXM</span>];
 
 <span class="pl-k">int</span> <span class="pl-en">main</span>()
 {

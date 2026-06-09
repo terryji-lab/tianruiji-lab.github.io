@@ -124,7 +124,7 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 <span class="pl-k">using</span> <span class="pl-k">namespace</span> <span class="pl-en">std</span><span class="pl-k">;</span>
 
 <span class="pl-k">const</span> <span class="pl-k">int</span> N = <span class="pl-c1">15</span>;
-<span class="pl-k">const</span> <span class="pl-k">int</span> MOD = <span class="pl-c1">100000000</span>;
+<span class="pl-k">const</span> <span class="pl-k">int</span> <span class="pl-c1">MOD</span> = <span class="pl-c1">100000000</span>;
 
 <span class="pl-k">int</span> m, n;
 <span class="pl-k">int</span> grass[N];
@@ -156,7 +156,7 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
                 <span class="pl-k">if</span> (mask2 &amp; (mask2 &gt;&gt; <span class="pl-c1">1</span>)) <span class="pl-k">continue</span>;
                 <span class="pl-k">if</span> (mask2 &amp; (~grass[row - <span class="pl-c1">1</span>])) <span class="pl-k">continue</span>;<span class="pl-c"><span class="pl-c">//</span>合法性判断</span>
                 <span class="pl-k">if</span> (!(mask2 &amp; mask)) {<span class="pl-c"><span class="pl-c">//</span>行于行之间合法性判断，如果合法就加上上一行的方案数</span>
-                    dp[mask][row] = (dp[mask][row] + dp[mask2][row - <span class="pl-c1">1</span>]) % MOD;
+                    dp[mask][row] = (dp[mask][row] + dp[mask2][row - <span class="pl-c1">1</span>]) % <span class="pl-c1">MOD</span>;
                 }
             }
         }
@@ -166,7 +166,7 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
     <span class="pl-k">for</span> (<span class="pl-k">int</span> mask = <span class="pl-c1">0</span>; mask &lt; (<span class="pl-c1">1</span> &lt;&lt; (n + <span class="pl-c1">1</span>)); mask++) {
         <span class="pl-k">if</span> (mask &amp; (mask &gt;&gt; <span class="pl-c1">1</span>)) <span class="pl-k">continue</span>;
         <span class="pl-k">if</span> (mask &amp; (~grass[m])) <span class="pl-k">continue</span>;
-        ans = (ans + dp[mask][m]) % MOD;<span class="pl-c"><span class="pl-c">//</span>统计答案</span>
+        ans = (ans + dp[mask][m]) % <span class="pl-c1">MOD</span>;<span class="pl-c"><span class="pl-c">//</span>统计答案</span>
     }
 
     cout &lt;&lt; ans &lt;&lt; endl;

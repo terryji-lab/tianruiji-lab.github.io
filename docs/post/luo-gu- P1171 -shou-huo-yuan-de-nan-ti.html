@@ -235,7 +235,7 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 <span class="pl-k">const</span> <span class="pl-k">int</span> N=<span class="pl-c1">25</span>;
 <span class="pl-k">int</span> grid[N][N];
 <span class="pl-k">int</span> dp[<span class="pl-c1">1</span>&lt;&lt;<span class="pl-c1">20</span>][N];<span class="pl-c"><span class="pl-c">//</span>最多有20个节点</span>
-<span class="pl-k">const</span> <span class="pl-k">int</span> INF=<span class="pl-c1">1e9</span>;
+<span class="pl-k">const</span> <span class="pl-k">int</span> <span class="pl-c1">INF</span>=<span class="pl-c1">1e9</span>;
 <span class="pl-k">int</span> n;
 <span class="pl-k">int</span> <span class="pl-en">main</span>()
 {
@@ -251,7 +251,7 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
     {
         <span class="pl-k">for</span>(<span class="pl-k">int</span> j=<span class="pl-c1">1</span>;j&lt;=n;j++)
         {
-            dp[i][j]=INF;
+            dp[i][j]=<span class="pl-c1">INF</span>;
         }
     }
     dp[<span class="pl-c1">1</span>][<span class="pl-c1">1</span>]=<span class="pl-c1">0</span>;<span class="pl-c"><span class="pl-c">//</span>初始化</span>
@@ -268,7 +268,7 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
             }
         }
     }
-    <span class="pl-k">int</span> ans=INF;
+    <span class="pl-k">int</span> ans=<span class="pl-c1">INF</span>;
     <span class="pl-k">for</span>(<span class="pl-k">int</span> i=<span class="pl-c1">1</span>;i&lt;=n;i++)
     {
         ans=<span class="pl-c1">min</span>(ans,dp[(<span class="pl-c1">1</span>&lt;&lt;n)-<span class="pl-c1">1</span>][i]+grid[i][<span class="pl-c1">1</span>]);<span class="pl-c"><span class="pl-c">//</span>枚举出发点，找答案</span>
